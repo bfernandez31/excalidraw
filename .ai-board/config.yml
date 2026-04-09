@@ -1,0 +1,15 @@
+version: 1
+project:
+  name: "excalidraw-monorepo"
+  language: typescript
+  framework: none
+runtime:
+  manager: yarn
+commands:
+  install: "yarn install"
+  test: "yarn test"
+testing:
+  e2e: false
+  framework: vitest
+agent:
+  cli: claude-code
