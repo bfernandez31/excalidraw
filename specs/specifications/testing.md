@@ -20,7 +20,7 @@ Excalidraw uses **Vitest 3.0.6** as the test runner and framework across the ent
 ### Key Libraries
 
 | Library | Version | Role |
-|---|---|---|
+| --- | --- | --- |
 | vitest | 3.0.6 | Test runner, assertions, mocking |
 | @testing-library/react | 16.2.0 | React component rendering and queries |
 | @testing-library/jest-dom | 6.6.3 | Extended DOM matchers (`toBeInTheDocument`, etc.) |
@@ -133,7 +133,7 @@ graph TB
 ## 3. Test Catalog
 
 | Test Type | Directory / Pattern | Framework | Approx. Count | Purpose |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | Pure unit — math | `packages/math/tests/` | Vitest | ~7 files, ~60 cases | Geometric primitives: point rotation, curve intersection, segment, vector, range |
 | Pure unit — utils | `packages/utils/tests/` | Vitest | ~4 files, ~30 cases | Public API utilities: `exportToCanvas`, `exportToBlob`, geometry helpers |
 | Pure unit — element | `packages/element/tests/` | Vitest | ~3 files, ~25 cases | Element transforms, text wrapping, embeddable behavior |
@@ -192,10 +192,10 @@ Elements are accessed through `window.h` (the internal test hook exposed by `cre
 
 ```typescript
 const { h } = window;
-h.elements  // current scene elements
-h.state     // current AppState
-h.history   // undo/redo history
-h.store     // store snapshot
+h.elements; // current scene elements
+h.state; // current AppState
+h.history; // undo/redo history
+h.store; // store snapshot
 ```
 
 Reference: `/packages/excalidraw/tests/helpers/api.ts`
@@ -210,9 +210,9 @@ All user-interaction simulation is done via helpers in `/packages/excalidraw/tes
 
 ```typescript
 const mouse = new Pointer("mouse");
-mouse.down(10, 10);   // pointerdown at (10, 10)
-mouse.move(50, 0);    // pointerMove delta
-mouse.up();           // pointerup
+mouse.down(10, 10); // pointerdown at (10, 10)
+mouse.move(50, 0); // pointerMove delta
+mouse.up(); // pointerup
 // touch pointers also supported:
 const finger1 = new Pointer("touch", 1);
 ```
@@ -229,9 +229,9 @@ Keyboard.redo();
 **`UI` class** — higher-level interactions:
 
 ```typescript
-UI.clickTool("rectangle");          // click toolbar button by tool name
-UI.clickLabeledElement("Stroke");   // click by aria-label
-UI.clickOnTestId("myTestId");       // click by data-testid
+UI.clickTool("rectangle"); // click toolbar button by tool name
+UI.clickLabeledElement("Stroke"); // click by aria-label
+UI.clickOnTestId("myTestId"); // click by data-testid
 UI.createElement("arrow", { x: 0, y: 0, width: 100, height: 100 });
 ```
 
@@ -292,8 +292,8 @@ Reference: `/excalidraw-app/tests/collab.test.tsx`
 
 ```typescript
 const renderStaticScene = vi.spyOn(StaticScene, "renderStaticScene");
-renderStaticScene.mockClear();        // reset call count between tests
-renderStaticScene.mock.calls.length   // assert render count
+renderStaticScene.mockClear(); // reset call count between tests
+renderStaticScene.mock.calls.length; // assert render count
 ```
 
 Reference: `/packages/excalidraw/tests/App.test.tsx`, `/packages/excalidraw/tests/regressionTests.test.tsx`, `/packages/excalidraw/tests/selection.test.tsx`
@@ -302,14 +302,17 @@ Reference: `/packages/excalidraw/tests/App.test.tsx`, `/packages/excalidraw/test
 
 ```typescript
 // mocks.ts
-vi.stubGlobal("Image", class extends Image {
-  constructor() {
-    super();
-    Object.defineProperty(this, "naturalWidth", { value: naturalWidth });
-    // ...
-    queueMicrotask(() => this.onload?.({} as Event));
-  }
-});
+vi.stubGlobal(
+  "Image",
+  class extends Image {
+    constructor() {
+      super();
+      Object.defineProperty(this, "naturalWidth", { value: naturalWidth });
+      // ...
+      queueMicrotask(() => this.onload?.({} as Event));
+    }
+  },
+);
 // cleanup after test:
 vi.unstubAllGlobals();
 ```
@@ -361,7 +364,9 @@ Snapshot tests capture stable outputs and fail on unexpected regressions. Two st
 
 ```typescript
 const checkpoint = (name: string) => {
-  expect(renderStaticScene.mock.calls.length).toMatchSnapshot(`[${name}] number of renders`);
+  expect(renderStaticScene.mock.calls.length).toMatchSnapshot(
+    `[${name}] number of renders`,
+  );
   expect(h.state).toMatchSnapshot(`[${name}] appState`);
   expect(h.elements.length).toMatchSnapshot(`[${name}] number of elements`);
 };
@@ -436,10 +441,19 @@ Excalidraw is an open collaboration tool without traditional user authentication
 vi.mock("../../excalidraw-app/data/firebase.ts", () => ({
   loadFromFirebase: async () => null,
   isSavedToFirebase: () => true,
-  saveFilesToFirebase: async () => ({ savedFiles: new Map(), erroredFiles: new Map() }),
+  saveFilesToFirebase: async () => ({
+    savedFiles: new Map(),
+    erroredFiles: new Map(),
+  }),
 }));
 vi.mock("socket.io-client", () => ({
-  default: () => ({ close: vi.fn(), on: vi.fn(), once: vi.fn(), off: vi.fn(), emit: vi.fn() }),
+  default: () => ({
+    close: vi.fn(),
+    on: vi.fn(),
+    once: vi.fn(),
+    off: vi.fn(),
+    emit: vi.fn(),
+  }),
 }));
 ```
 
@@ -475,7 +489,7 @@ coverage: {
 ### Report Formats
 
 | Format | File Location | Use Case |
-|---|---|---|
+| --- | --- | --- |
 | `text` | stdout (terminal table) | Quick CI feedback |
 | `json-summary` | `coverage/coverage-summary.json` | Badge / threshold automation |
 | `json` | `coverage/coverage-final.json` | Tooling integration |
@@ -484,12 +498,12 @@ coverage: {
 
 ### Thresholds
 
-| Metric | Threshold |
-|---|---|
-| Lines | 60% |
-| Branches | 70% |
-| Functions | 63% |
-| Statements | 60% |
+| Metric     | Threshold |
+| ---------- | --------- |
+| Lines      | 60%       |
+| Branches   | 70%       |
+| Functions  | 63%       |
+| Statements | 60%       |
 
 If any threshold is not met, `vitest --coverage` exits with a non-zero code, failing CI.
 
@@ -511,7 +525,7 @@ yarn test:ui
 ## 6. Test Commands
 
 | Command | Description |
-|---|---|
+| --- | --- |
 | `yarn test` | Run Vitest in interactive watch mode (default) |
 | `yarn test:app` | Alias for `vitest` — run all tests in watch mode |
 | `yarn test:app --watch=false` | Run all tests once and exit (CI mode) |

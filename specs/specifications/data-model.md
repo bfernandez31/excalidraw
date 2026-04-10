@@ -46,7 +46,7 @@
 Excalidraw has no database ORM or relational database. The entire data schema is expressed as **TypeScript type definitions**. The canonical schema files are:
 
 | File | Purpose |
-|---|---|
+| --- | --- |
 | `packages/element/src/types.ts` | All element types and related primitives |
 | `packages/excalidraw/types.ts` | Application state, collaborator, binary files, library items |
 | `packages/excalidraw/data/types.ts` | Import/export envelope types |
@@ -58,7 +58,7 @@ Excalidraw has no database ORM or relational database. The entire data schema is
 There are **three persistence layers** used by the application (in `excalidraw-app/`):
 
 | Storage | Library | Key(s) | What Is Stored |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | **localStorage** | Browser built-in | `excalidraw` | Serialized array of non-deleted `ExcalidrawElement[]` (JSON) |
 | **localStorage** | Browser built-in | `excalidraw-state` | Serialized `AppState` subset (JSON) |
 | **localStorage** | Browser built-in | `excalidraw-collab` | Collaborator username (JSON) |
@@ -202,7 +202,7 @@ The abstract base type `_ExcalidrawElementBase` (not directly instantiable) is t
 **Source:** `packages/element/src/types.ts`
 
 | Field | Type | Nullable | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `id` | `string` | No | Unique element identifier |
 | `x` | `number` | No | Horizontal canvas position |
 | `y` | `number` | No | Vertical canvas position |
@@ -231,6 +231,7 @@ The abstract base type `_ExcalidrawElementBase` (not directly instantiable) is t
 | `roundness` | `null \| { type: RoundnessType; value?: number }` | Yes | Corner roundness algorithm and optional pixel value |
 
 **Relationships:**
+
 - Parent of every concrete element type.
 - References `BoundElement[]` for bound arrow/text connections.
 - References `GroupId[]` to associate the element with one or more groups.
@@ -244,8 +245,8 @@ The abstract base type `_ExcalidrawElementBase` (not directly instantiable) is t
 
 Extends `_ExcalidrawElementBase` with no additional fields.
 
-| Field | Type | Description |
-|---|---|---|
+| Field  | Type          | Description          |
+| ------ | ------------- | -------------------- |
 | `type` | `"rectangle"` | Discriminant literal |
 
 ---
@@ -256,8 +257,8 @@ Extends `_ExcalidrawElementBase` with no additional fields.
 
 Extends `_ExcalidrawElementBase` with no additional fields.
 
-| Field | Type | Description |
-|---|---|---|
+| Field  | Type        | Description          |
+| ------ | ----------- | -------------------- |
 | `type` | `"diamond"` | Discriminant literal |
 
 ---
@@ -268,8 +269,8 @@ Extends `_ExcalidrawElementBase` with no additional fields.
 
 Extends `_ExcalidrawElementBase` with no additional fields.
 
-| Field | Type | Description |
-|---|---|---|
+| Field  | Type        | Description          |
+| ------ | ----------- | -------------------- |
 | `type` | `"ellipse"` | Discriminant literal |
 
 ---
@@ -281,7 +282,7 @@ Extends `_ExcalidrawElementBase` with no additional fields.
 Extends `_ExcalidrawElementBase`. All additional fields are `Readonly`.
 
 | Field | Type | Nullable | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `type` | `"text"` | No | Discriminant literal |
 | `fontSize` | `number` | No | Font size in pixels |
 | `fontFamily` | `FontFamilyValues` | No | Numeric font family identifier |
@@ -294,6 +295,7 @@ Extends `_ExcalidrawElementBase`. All additional fields are `Readonly`.
 | `lineHeight` | `number` (unitless) | No | Unitless W3C line-height multiplier |
 
 **Relationships:**
+
 - Optional one-to-one relationship with a container element via `containerId`.
 
 ---
@@ -305,7 +307,7 @@ Extends `_ExcalidrawElementBase`. All additional fields are `Readonly`.
 Base for both lines and arrows. Extends `_ExcalidrawElementBase`. All additional fields are `Readonly`.
 
 | Field | Type | Nullable | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `type` | `"line" \| "arrow"` | No | Discriminant literal |
 | `points` | `readonly LocalPoint[]` | No | Array of element-local 2D points defining the path |
 | `startBinding` | `FixedPointBinding \| null` | Yes | Binding info for the start endpoint |
@@ -316,7 +318,7 @@ Base for both lines and arrows. Extends `_ExcalidrawElementBase`. All additional
 **FixedPointBinding** sub-object:
 
 | Field | Type | Description |
-|---|---|---|
+| --- | --- | --- |
 | `elementId` | `string` | ID of the bound target element |
 | `fixedPoint` | `[number, number]` | Normalized (0.0-1.0) point on the target element |
 | `mode` | `BindMode` | `"inside"`, `"orbit"`, or `"skip"` |
@@ -330,7 +332,7 @@ Base for both lines and arrows. Extends `_ExcalidrawElementBase`. All additional
 Extends `ExcalidrawLinearElement`.
 
 | Field | Type | Nullable | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `type` | `"arrow"` | No | Discriminant literal |
 | `elbowed` | `boolean` | No | Whether the arrow uses elbow (orthogonal) routing |
 
@@ -343,7 +345,7 @@ Extends `ExcalidrawLinearElement`.
 Merges `ExcalidrawArrowElement` with additional elbow-specific routing state.
 
 | Field | Type | Nullable | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `elbowed` | `true` | No | Always `true` for elbow arrows |
 | `fixedSegments` | `readonly FixedSegment[] \| null` | Yes | User-pinned path segments |
 | `startBinding` | `FixedPointBinding \| null` | Yes | Overrides base binding |
@@ -353,11 +355,11 @@ Merges `ExcalidrawArrowElement` with additional elbow-specific routing state.
 
 **FixedSegment** sub-object:
 
-| Field | Type | Description |
-|---|---|---|
-| `start` | `LocalPoint` | Segment start point |
-| `end` | `LocalPoint` | Segment end point |
-| `index` | `number` | Index of the segment in the points array |
+| Field   | Type         | Description                              |
+| ------- | ------------ | ---------------------------------------- |
+| `start` | `LocalPoint` | Segment start point                      |
+| `end`   | `LocalPoint` | Segment end point                        |
+| `index` | `number`     | Index of the segment in the points array |
 
 ---
 
@@ -367,10 +369,10 @@ Merges `ExcalidrawArrowElement` with additional elbow-specific routing state.
 
 Extends `ExcalidrawLinearElement`.
 
-| Field | Type | Nullable | Description |
-|---|---|---|---|
-| `type` | `"line"` | No | Discriminant literal |
-| `polygon` | `boolean` | No | Whether the line forms a closed polygon |
+| Field     | Type      | Nullable | Description                             |
+| --------- | --------- | -------- | --------------------------------------- |
+| `type`    | `"line"`  | No       | Discriminant literal                    |
+| `polygon` | `boolean` | No       | Whether the line forms a closed polygon |
 
 ---
 
@@ -381,7 +383,7 @@ Extends `ExcalidrawLinearElement`.
 Extends `_ExcalidrawElementBase`. All additional fields are `Readonly`.
 
 | Field | Type | Nullable | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `type` | `"freedraw"` | No | Discriminant literal |
 | `points` | `readonly LocalPoint[]` | No | Array of captured stylus/pointer points |
 | `pressures` | `readonly number[]` | No | Per-point pressure values (0.0-1.0) |
@@ -396,7 +398,7 @@ Extends `_ExcalidrawElementBase`. All additional fields are `Readonly`.
 Extends `_ExcalidrawElementBase`. All additional fields are `Readonly`.
 
 | Field | Type | Nullable | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `type` | `"image"` | No | Discriminant literal |
 | `fileId` | `FileId \| null` | Yes | Reference to `BinaryFileData.id` in the files store |
 | `status` | `"pending" \| "saved" \| "error"` | No | Persistence status of the referenced file |
@@ -405,16 +407,17 @@ Extends `_ExcalidrawElementBase`. All additional fields are `Readonly`.
 
 **ImageCrop** sub-object:
 
-| Field | Type | Description |
-|---|---|---|
-| `x` | `number` | Crop origin X in image pixels |
-| `y` | `number` | Crop origin Y in image pixels |
-| `width` | `number` | Crop width in image pixels |
-| `height` | `number` | Crop height in image pixels |
-| `naturalWidth` | `number` | Original image width in pixels |
+| Field           | Type     | Description                     |
+| --------------- | -------- | ------------------------------- |
+| `x`             | `number` | Crop origin X in image pixels   |
+| `y`             | `number` | Crop origin Y in image pixels   |
+| `width`         | `number` | Crop width in image pixels      |
+| `height`        | `number` | Crop height in image pixels     |
+| `naturalWidth`  | `number` | Original image width in pixels  |
 | `naturalHeight` | `number` | Original image height in pixels |
 
 **Relationships:**
+
 - References `BinaryFileData` via `fileId`.
 
 ---
@@ -425,12 +428,13 @@ Extends `_ExcalidrawElementBase`. All additional fields are `Readonly`.
 
 Extends `_ExcalidrawElementBase`.
 
-| Field | Type | Nullable | Description |
-|---|---|---|---|
-| `type` | `"frame"` | No | Discriminant literal |
-| `name` | `string \| null` | Yes | Optional display label for the frame |
+| Field  | Type             | Nullable | Description                          |
+| ------ | ---------------- | -------- | ------------------------------------ |
+| `type` | `"frame"`        | No       | Discriminant literal                 |
+| `name` | `string \| null` | Yes      | Optional display label for the frame |
 
 **Relationships:**
+
 - Other elements reference this frame via their `frameId` field.
 
 ---
@@ -441,10 +445,10 @@ Extends `_ExcalidrawElementBase`.
 
 Extends `_ExcalidrawElementBase`.
 
-| Field | Type | Nullable | Description |
-|---|---|---|---|
-| `type` | `"magicframe"` | No | Discriminant literal |
-| `name` | `string \| null` | Yes | Optional display label |
+| Field  | Type             | Nullable | Description            |
+| ------ | ---------------- | -------- | ---------------------- |
+| `type` | `"magicframe"`   | No       | Discriminant literal   |
+| `name` | `string \| null` | Yes      | Optional display label |
 
 ---
 
@@ -455,14 +459,14 @@ Extends `_ExcalidrawElementBase`.
 Extends `_ExcalidrawElementBase`. All additional fields are `Readonly`.
 
 | Field | Type | Nullable | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `type` | `"iframe"` | No | Discriminant literal |
 | `customData` | `{ generationData?: MagicGenerationData }` (optional) | Yes | AI generation state for magic iframe content |
 
 **MagicGenerationData** (discriminated union):
 
 | Status | Additional Fields | Description |
-|---|---|---|
+| --- | --- | --- |
 | `"pending"` | -- | Generation is in progress |
 | `"done"` | `html: string` | Generated HTML content is available |
 | `"error"` | `message?: string; code: string` | Generation failed |
@@ -475,8 +479,8 @@ Extends `_ExcalidrawElementBase`. All additional fields are `Readonly`.
 
 Extends `_ExcalidrawElementBase`.
 
-| Field | Type | Description |
-|---|---|---|
+| Field  | Type           | Description          |
+| ------ | -------------- | -------------------- |
 | `type` | `"embeddable"` | Discriminant literal |
 
 ---
@@ -488,7 +492,7 @@ Extends `_ExcalidrawElementBase`.
 Stored in IndexedDB under the `files-db` / `files-store`, keyed by `FileId`.
 
 | Field | Type | Nullable | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `id` | `FileId` (branded `string`) | No | Primary key; matches `ExcalidrawImageElement.fileId` |
 | `mimeType` | `ValueOf<typeof IMAGE_MIME_TYPES> \| "application/octet-stream"` | No | MIME type of the binary content |
 | `dataURL` | `DataURL` (branded `string`) | No | Base-64 data URL of the file contents |
@@ -507,7 +511,7 @@ Stored in IndexedDB under the `files-db` / `files-store`, keyed by `FileId`.
 Persisted in IndexedDB under `excalidraw-library-db` as `LibraryPersistedData = { libraryItems: LibraryItems }`.
 
 | Field | Type | Nullable | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `id` | `string` | No | Unique library item identifier |
 | `status` | `"published" \| "unpublished"` | No | Whether the item has been published to the Excalidraw library |
 | `elements` | `readonly NonDeleted<ExcalidrawElement>[]` | No | Array of elements that compose this library item |
@@ -516,6 +520,7 @@ Persisted in IndexedDB under `excalidraw-library-db` as `LibraryPersistedData = 
 | `error` | `string` (optional) | Yes | Error message if the item failed to load |
 
 **Relationships:**
+
 - Contains one or more `ExcalidrawElement` instances as a reusable snippet.
 
 ---
@@ -527,7 +532,7 @@ Persisted in IndexedDB under `excalidraw-library-db` as `LibraryPersistedData = 
 Held in memory in `AppState.collaborators` as `Map<SocketId, Collaborator>`. Not persisted locally.
 
 | Field | Type | Nullable | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `id` | `string` (optional) | Yes | Stable user ID; used to deduplicate avatars |
 | `socketId` | `SocketId` (branded `string`) | Yes | WebSocket connection ID |
 | `username` | `string \| null` (optional) | Yes | Display name |
@@ -545,7 +550,7 @@ Held in memory in `AppState.collaborators` as `Map<SocketId, Collaborator>`. Not
 **CollaboratorPointer** sub-object:
 
 | Field | Type | Description |
-|---|---|---|
+| --- | --- | --- |
 | `x` | `number` | Canvas X position |
 | `y` | `number` | Canvas Y position |
 | `tool` | `"pointer" \| "laser"` | Active pointer tool |
@@ -563,7 +568,7 @@ The top-level runtime state object for the editor. A filtered subset is persiste
 Selected key fields:
 
 | Field | Type | Description |
-|---|---|---|
+| --- | --- | --- |
 | `name` | `string \| null` | Scene/file name |
 | `theme` | `Theme` | `"light"` or `"dark"` |
 | `scrollX` | `number` | Horizontal scroll offset |
@@ -610,7 +615,7 @@ Selected key fields:
 **ExportedDataState** -- the envelope written to `.excalidraw` JSON files:
 
 | Field | Type | Description |
-|---|---|---|
+| --- | --- | --- |
 | `type` | `string` | Always `"excalidraw"` |
 | `version` | `number` | Schema version (currently `2`) |
 | `source` | `string` | Origin URL of the exporting application |
@@ -621,7 +626,7 @@ Selected key fields:
 **ImportedDataState** -- the envelope read on scene load (all fields optional for partial loads):
 
 | Field | Type | Description |
-|---|---|---|
+| --- | --- | --- |
 | `type` | `string` (optional) | File type hint |
 | `version` | `number` (optional) | Schema version |
 | `source` | `string` (optional) | Origin |
@@ -639,12 +644,12 @@ Selected key fields:
 
 **Source:** `packages/element/src/types.ts`
 
-| Value | Description |
-|---|---|
-| `"hachure"` | Diagonal hatching pattern |
-| `"cross-hatch"` | Cross-hatch pattern |
-| `"solid"` | Solid flat fill |
-| `"zigzag"` | Zigzag line pattern |
+| Value           | Description               |
+| --------------- | ------------------------- |
+| `"hachure"`     | Diagonal hatching pattern |
+| `"cross-hatch"` | Cross-hatch pattern       |
+| `"solid"`       | Solid flat fill           |
+| `"zigzag"`      | Zigzag line pattern       |
 
 ---
 
@@ -652,11 +657,11 @@ Selected key fields:
 
 **Source:** `packages/element/src/types.ts`
 
-| Value | Description |
-|---|---|
-| `"solid"` | Continuous stroke |
-| `"dashed"` | Dashed stroke |
-| `"dotted"` | Dotted stroke |
+| Value      | Description       |
+| ---------- | ----------------- |
+| `"solid"`  | Continuous stroke |
+| `"dashed"` | Dashed stroke     |
+| `"dotted"` | Dotted stroke     |
 
 ---
 
@@ -664,9 +669,9 @@ Selected key fields:
 
 **Source:** `packages/element/src/types.ts`
 
-| Value | Description |
-|---|---|
-| `"round"` | Rounded line joins |
+| Value     | Description              |
+| --------- | ------------------------ |
+| `"round"` | Rounded line joins       |
 | `"sharp"` | Sharp/mitered line joins |
 
 ---
@@ -676,7 +681,7 @@ Selected key fields:
 **Source:** `packages/common/src/constants.ts`
 
 | Constant | Value | Description |
-|---|---|---|
+| --- | --- | --- |
 | `ROUNDNESS.LEGACY` | `1` | Legacy proportional rounding for rectangles |
 | `ROUNDNESS.PROPORTIONAL_RADIUS` | `2` | Proportional radius; used for linear elements and diamonds |
 | `ROUNDNESS.ADAPTIVE_RADIUS` | `3` | Fixed pixel radius (default for rectangles) |
@@ -687,11 +692,11 @@ Selected key fields:
 
 **Source:** `packages/common/src/constants.ts`
 
-| Constant | Value | Description |
-|---|---|---|
-| `ROUGHNESS.architect` | `0` | Clean, precise lines |
-| `ROUGHNESS.artist` | `1` | Default; moderate sketch feel |
-| `ROUGHNESS.cartoonist` | `2` | Loose, hand-drawn appearance |
+| Constant               | Value | Description                   |
+| ---------------------- | ----- | ----------------------------- |
+| `ROUGHNESS.architect`  | `0`   | Clean, precise lines          |
+| `ROUGHNESS.artist`     | `1`   | Default; moderate sketch feel |
+| `ROUGHNESS.cartoonist` | `2`   | Loose, hand-drawn appearance  |
 
 ---
 
@@ -699,11 +704,11 @@ Selected key fields:
 
 **Source:** `packages/common/src/constants.ts`
 
-| Constant | Value (px) | Description |
-|---|---|---|
-| `STROKE_WIDTH.thin` | `1` | Thin stroke |
-| `STROKE_WIDTH.bold` | `2` | Bold stroke (default) |
-| `STROKE_WIDTH.extraBold` | `4` | Extra bold stroke |
+| Constant                 | Value (px) | Description           |
+| ------------------------ | ---------- | --------------------- |
+| `STROKE_WIDTH.thin`      | `1`        | Thin stroke           |
+| `STROKE_WIDTH.bold`      | `2`        | Bold stroke (default) |
+| `STROKE_WIDTH.extraBold` | `4`        | Extra bold stroke     |
 
 ---
 
@@ -712,7 +717,7 @@ Selected key fields:
 **Source:** `packages/common/src/constants.ts`
 
 | Name | Value | Notes |
-|---|---|---|
+| --- | --- | --- |
 | `Virgil` | `1` | Excalidraw's hand-drawn font |
 | `Helvetica` | `2` | System sans-serif |
 | `Cascadia` | `3` | Monospace code font |
@@ -731,11 +736,11 @@ Value `4` is intentionally unused (reserved/legacy).
 
 **Source:** `packages/common/src/constants.ts`
 
-| Constant | Value |
-|---|---|
-| `TEXT_ALIGN.LEFT` | `"left"` |
+| Constant            | Value      |
+| ------------------- | ---------- |
+| `TEXT_ALIGN.LEFT`   | `"left"`   |
 | `TEXT_ALIGN.CENTER` | `"center"` |
-| `TEXT_ALIGN.RIGHT` | `"right"` |
+| `TEXT_ALIGN.RIGHT`  | `"right"`  |
 
 ---
 
@@ -743,9 +748,9 @@ Value `4` is intentionally unused (reserved/legacy).
 
 **Source:** `packages/common/src/constants.ts`
 
-| Constant | Value |
-|---|---|
-| `VERTICAL_ALIGN.TOP` | `"top"` |
+| Constant                | Value      |
+| ----------------------- | ---------- |
+| `VERTICAL_ALIGN.TOP`    | `"top"`    |
 | `VERTICAL_ALIGN.MIDDLE` | `"middle"` |
 | `VERTICAL_ALIGN.BOTTOM` | `"bottom"` |
 
@@ -755,10 +760,10 @@ Value `4` is intentionally unused (reserved/legacy).
 
 **Source:** `packages/common/src/constants.ts`
 
-| Constant | Value |
-|---|---|
+| Constant      | Value     |
+| ------------- | --------- |
 | `THEME.LIGHT` | `"light"` |
-| `THEME.DARK` | `"dark"` |
+| `THEME.DARK`  | `"dark"`  |
 
 ---
 
@@ -767,7 +772,7 @@ Value `4` is intentionally unused (reserved/legacy).
 **Source:** `packages/common/src/constants.ts`
 
 | Enum Member | Value | Description |
-|---|---|---|
+| --- | --- | --- |
 | `UserIdleState.ACTIVE` | `"active"` | User is actively interacting |
 | `UserIdleState.AWAY` | `"away"` | User stepped away |
 | `UserIdleState.IDLE` | `"idle"` | User has been inactive for `IDLE_THRESHOLD` (60 s) |
@@ -778,22 +783,22 @@ Value `4` is intentionally unused (reserved/legacy).
 
 **Source:** `packages/element/src/types.ts`
 
-| Value | Description |
-|---|---|
-| `"arrow"` | Standard open arrow |
-| `"bar"` | Perpendicular bar |
-| `"circle"` | Filled circle |
-| `"circle_outline"` | Open circle |
-| `"triangle"` | Filled triangle |
-| `"triangle_outline"` | Open triangle |
-| `"diamond"` | Filled diamond |
-| `"diamond_outline"` | Open diamond |
-| `"cardinality_one"` | ER notation: exactly one |
-| `"cardinality_many"` | ER notation: many |
-| `"cardinality_one_or_many"` | ER notation: one or many |
-| `"cardinality_exactly_one"` | ER notation: exactly one (strict) |
-| `"cardinality_zero_or_one"` | ER notation: zero or one |
-| `"cardinality_zero_or_many"` | ER notation: zero or many |
+| Value                        | Description                       |
+| ---------------------------- | --------------------------------- |
+| `"arrow"`                    | Standard open arrow               |
+| `"bar"`                      | Perpendicular bar                 |
+| `"circle"`                   | Filled circle                     |
+| `"circle_outline"`           | Open circle                       |
+| `"triangle"`                 | Filled triangle                   |
+| `"triangle_outline"`         | Open triangle                     |
+| `"diamond"`                  | Filled diamond                    |
+| `"diamond_outline"`          | Open diamond                      |
+| `"cardinality_one"`          | ER notation: exactly one          |
+| `"cardinality_many"`         | ER notation: many                 |
+| `"cardinality_one_or_many"`  | ER notation: one or many          |
+| `"cardinality_exactly_one"`  | ER notation: exactly one (strict) |
+| `"cardinality_zero_or_one"`  | ER notation: zero or one          |
+| `"cardinality_zero_or_many"` | ER notation: zero or many         |
 
 Legacy values (deprecated): `"dot"`, `"crowfoot_one"`, `"crowfoot_many"`, `"crowfoot_one_or_many"`.
 
@@ -803,11 +808,11 @@ Legacy values (deprecated): `"dot"`, `"crowfoot_one"`, `"crowfoot_many"`, `"crow
 
 **Source:** `packages/element/src/types.ts`
 
-| Value | Description |
-|---|---|
-| `"inside"` | Arrow endpoint moves inside the target shape |
-| `"orbit"` | Arrow endpoint orbits the outside of the target shape |
-| `"skip"` | Arrow does not bind to the target shape |
+| Value      | Description                                           |
+| ---------- | ----------------------------------------------------- |
+| `"inside"` | Arrow endpoint moves inside the target shape          |
+| `"orbit"`  | Arrow endpoint orbits the outside of the target shape |
+| `"skip"`   | Arrow does not bind to the target shape               |
 
 ---
 
@@ -816,7 +821,7 @@ Legacy values (deprecated): `"dot"`, `"crowfoot_one"`, `"crowfoot_many"`, `"crow
 **Source:** `packages/element/src/store.ts`
 
 | Constant | Value | Description |
-|---|---|---|
+| --- | --- | --- |
 | `IMMEDIATELY` | `"IMMEDIATELY"` | Snapshot delta is pushed to undo stack immediately |
 | `NEVER` | `"NEVER"` | Change is never recorded in undo history |
 | `EVENTUALLY` | `"EVENTUALLY"` | Change is deferred until the next `IMMEDIATELY` commit |
@@ -836,7 +841,7 @@ All available tool modes: `selection`, `lasso`, `rectangle`, `diamond`, `ellipse
 **Source:** `excalidraw-app/app_constants.ts`
 
 | Key | Storage | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | `LOCAL_STORAGE_ELEMENTS` (`"excalidraw"`) | localStorage | Serialized elements array |
 | `LOCAL_STORAGE_APP_STATE` (`"excalidraw-state"`) | localStorage | Serialized app state |
 | `LOCAL_STORAGE_COLLAB` (`"excalidraw-collab"`) | localStorage | Collaborator username |
@@ -853,7 +858,7 @@ All available tool modes: `selection`, `lasso`, `rectangle`, `diamond`, `ellipse
 **Source:** `packages/common/src/constants.ts`
 
 | Constant | Value | Meaning |
-|---|---|---|
+| --- | --- | --- |
 | `VERSIONS.excalidraw` | `2` | Current `.excalidraw` file format version |
 | `VERSIONS.excalidrawLibrary` | `2` | Current `.excalidrawlib` file format version |
 

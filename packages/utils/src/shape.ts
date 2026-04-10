@@ -164,7 +164,6 @@ export const getSelectionBoxShape = <Point extends GlobalPoint | LocalPoint>(
   y1 -= padding;
   y2 += padding;
 
-  //const angleInDegrees = angleToDegrees(element.angle);
   const center = pointFrom(cx, cy);
   const topLeft = pointRotateRads(pointFrom(x1, y1), center, element.angle);
   const topRight = pointRotateRads(pointFrom(x2, y1), center, element.angle);
@@ -377,23 +376,32 @@ export const segmentIntersectRectangleElement = <
     (bounds[1] + bounds[3]) / 2,
   );
 
+  const topLeft = pointRotateRads(
+    pointFrom(bounds[0], bounds[1]),
+    center,
+    element.angle,
+  );
+  const topRight = pointRotateRads(
+    pointFrom(bounds[2], bounds[1]),
+    center,
+    element.angle,
+  );
+  const bottomRight = pointRotateRads(
+    pointFrom(bounds[2], bounds[3]),
+    center,
+    element.angle,
+  );
+  const bottomLeft = pointRotateRads(
+    pointFrom(bounds[0], bounds[3]),
+    center,
+    element.angle,
+  );
+
   return [
-    lineSegment(
-      pointRotateRads(pointFrom(bounds[0], bounds[1]), center, element.angle),
-      pointRotateRads(pointFrom(bounds[2], bounds[1]), center, element.angle),
-    ),
-    lineSegment(
-      pointRotateRads(pointFrom(bounds[2], bounds[1]), center, element.angle),
-      pointRotateRads(pointFrom(bounds[2], bounds[3]), center, element.angle),
-    ),
-    lineSegment(
-      pointRotateRads(pointFrom(bounds[2], bounds[3]), center, element.angle),
-      pointRotateRads(pointFrom(bounds[0], bounds[3]), center, element.angle),
-    ),
-    lineSegment(
-      pointRotateRads(pointFrom(bounds[0], bounds[3]), center, element.angle),
-      pointRotateRads(pointFrom(bounds[0], bounds[1]), center, element.angle),
-    ),
+    lineSegment(topLeft, topRight),
+    lineSegment(topRight, bottomRight),
+    lineSegment(bottomRight, bottomLeft),
+    lineSegment(bottomLeft, topLeft),
   ]
     .map((s) => segmentsIntersectAt(segment, s))
     .filter((i): i is Point => !!i);
@@ -480,65 +488,6 @@ export const pointInEllipse = <Point extends LocalPoint | GlobalPoint>(
   );
 
   return (
-    (rotatedPointX / halfWidth) * (rotatedPointX / halfWidth) +
-      (rotatedPointY / halfHeight) * (rotatedPointY / halfHeight) <=
-    1
+    (rotatedPointX / halfWidth) ** 2 + (rotatedPointY / halfHeight) ** 2 <= 1
   );
-};
-
-export const ellipseAxes = <Point extends LocalPoint | GlobalPoint>(
-  ellipse: Ellipse<Point>,
-) => {
-  const widthGreaterThanHeight = ellipse.halfWidth > ellipse.halfHeight;
-
-  const majorAxis = widthGreaterThanHeight
-    ? ellipse.halfWidth * 2
-    : ellipse.halfHeight * 2;
-  const minorAxis = widthGreaterThanHeight
-    ? ellipse.halfHeight * 2
-    : ellipse.halfWidth * 2;
-
-  return {
-    majorAxis,
-    minorAxis,
-  };
-};
-
-export const ellipseFocusToCenter = <Point extends LocalPoint | GlobalPoint>(
-  ellipse: Ellipse<Point>,
-) => {
-  const { majorAxis, minorAxis } = ellipseAxes(ellipse);
-
-  return Math.sqrt(majorAxis ** 2 - minorAxis ** 2);
-};
-
-export const ellipseExtremes = <Point extends LocalPoint | GlobalPoint>(
-  ellipse: Ellipse<Point>,
-) => {
-  const { center, angle } = ellipse;
-  const { majorAxis, minorAxis } = ellipseAxes(ellipse);
-
-  const cos = Math.cos(angle);
-  const sin = Math.sin(angle);
-
-  const sqSum = majorAxis ** 2 + minorAxis ** 2;
-  const sqDiff = (majorAxis ** 2 - minorAxis ** 2) * Math.cos(2 * angle);
-
-  const yMax = Math.sqrt((sqSum - sqDiff) / 2);
-  const xAtYMax =
-    (yMax * sqSum * sin * cos) /
-    (majorAxis ** 2 * sin ** 2 + minorAxis ** 2 * cos ** 2);
-
-  const xMax = Math.sqrt((sqSum + sqDiff) / 2);
-  const yAtXMax =
-    (xMax * sqSum * sin * cos) /
-    (majorAxis ** 2 * cos ** 2 + minorAxis ** 2 * sin ** 2);
-  const centerVector = vectorFromPoint(center);
-
-  return [
-    vectorAdd(vector(xAtYMax, yMax), centerVector),
-    vectorAdd(vectorScale(vector(xAtYMax, yMax), -1), centerVector),
-    vectorAdd(vector(xMax, yAtXMax), centerVector),
-    vectorAdd(vector(xMax, yAtXMax), centerVector),
-  ];
 };

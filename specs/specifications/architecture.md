@@ -19,20 +19,15 @@ Excalidraw employs a **layered monorepo architecture** with a **component-based 
 
 ### Primary Patterns Identified
 
-**Monorepo with Tiered Package Boundaries**
-The repository is managed by Yarn workspaces with five distinct packages (`common`, `math`, `element`, `excalidraw`, `utils`) and one application (`excalidraw-app`). Dependency direction is strictly enforced: lower-level packages (`math`, `common`) have no knowledge of higher-level ones. This is confirmed by the import aliases in `excalidraw-app/vite.config.mts` which map all `@excalidraw/*` imports to local source paths.
+**Monorepo with Tiered Package Boundaries** The repository is managed by Yarn workspaces with five distinct packages (`common`, `math`, `element`, `excalidraw`, `utils`) and one application (`excalidraw-app`). Dependency direction is strictly enforced: lower-level packages (`math`, `common`) have no knowledge of higher-level ones. This is confirmed by the import aliases in `excalidraw-app/vite.config.mts` which map all `@excalidraw/*` imports to local source paths.
 
-**Command Pattern for User Actions**
-All user-initiated mutations (draw, delete, align, flip, group, etc.) are modelled as discrete `Action` objects registered with an `ActionManager` class (`packages/excalidraw/actions/manager.tsx`). Each action exposes an `UpdaterFn` that returns an `ActionResult` (new elements + appState), keeping state transitions pure and auditable.
+**Command Pattern for User Actions** All user-initiated mutations (draw, delete, align, flip, group, etc.) are modelled as discrete `Action` objects registered with an `ActionManager` class (`packages/excalidraw/actions/manager.tsx`). Each action exposes an `UpdaterFn` that returns an `ActionResult` (new elements + appState), keeping state transitions pure and auditable.
 
-**Event Sourcing / Delta-Based History**
-The undo/redo system in `packages/element/src/store.ts` and `packages/excalidraw/history.ts` captures `StoreDelta` / `HistoryDelta` objects rather than full snapshots. Changes are classified at write time via `CaptureUpdateAction` (`IMMEDIATELY`, `EVENTUALLY`, `NEVER`), giving fine-grained control over what enters the undo stack.
+**Event Sourcing / Delta-Based History** The undo/redo system in `packages/element/src/store.ts` and `packages/excalidraw/history.ts` captures `StoreDelta` / `HistoryDelta` objects rather than full snapshots. Changes are classified at write time via `CaptureUpdateAction` (`IMMEDIATELY`, `EVENTUALLY`, `NEVER`), giving fine-grained control over what enters the undo stack.
 
-**Publish–Subscribe for Cross-Component Communication**
-`packages/common/src/emitter.ts` and `packages/common/src/appEventBus.ts` implement a typed event bus consumed by the main `App` class and collaboration layer without tight coupling.
+**Publish–Subscribe for Cross-Component Communication** `packages/common/src/emitter.ts` and `packages/common/src/appEventBus.ts` implement a typed event bus consumed by the main `App` class and collaboration layer without tight coupling.
 
-**Client-Side Only, No Backend API**
-There is no server-side rendering or REST API. The application is a fully static SPA (served via Vercel / Docker) that communicates with external infrastructure (Firebase, WebSocket relay) purely from the browser.
+**Client-Side Only, No Backend API** There is no server-side rendering or REST API. The application is a fully static SPA (served via Vercel / Docker) that communicates with external infrastructure (Firebase, WebSocket relay) purely from the browser.
 
 ---
 
@@ -207,7 +202,7 @@ sequenceDiagram
 Responsibilities: Application entry point, PWA registration, Firebase integration, real-time collaboration orchestration, local persistence, cross-tab synchronization, Sentry error reporting.
 
 | Path | Responsibility |
-|---|---|
+| --- | --- |
 | `excalidraw-app/index.tsx` | DOM mount, Service Worker registration via `vite-plugin-pwa` |
 | `excalidraw-app/App.tsx` | Root component; composes `<Excalidraw>` with collab, theming, i18n |
 | `excalidraw-app/collab/Collab.tsx` | Class component managing WebSocket session lifecycle |
@@ -225,7 +220,7 @@ Responsibilities: Application entry point, PWA registration, Firebase integratio
 Responsibilities: Published npm library (`@excalidraw/excalidraw`); self-contained whiteboard editor React component; exposes `ExcalidrawImperativeAPI`; provides all UI, tool handling, history, data serialization, font loading.
 
 | Sub-path | Responsibility |
-|---|---|
+| --- | --- |
 | `packages/excalidraw/index.tsx` | Public API surface; exports `<Excalidraw>`, `ExcalidrawAPIProvider`, utility functions |
 | `packages/excalidraw/components/App.tsx` | ~12,800-line class component; owns all pointer/keyboard event handling, tool FSM, element lifecycle |
 | `packages/excalidraw/actions/` | `ActionManager` + ~45 discrete action modules; Command pattern for all mutations |
@@ -253,7 +248,7 @@ Responsibilities: Published npm library (`@excalidraw/excalidraw`); self-contain
 Responsibilities: Pure domain logic for Excalidraw elements; no React or browser APIs (except Canvas in rendering). Defines element types, mutation, geometry, collision, bindings, fractional indexing, undo/redo store.
 
 | File | Responsibility |
-|---|---|
+| --- | --- |
 | `src/types.ts` | TypeScript types for all `ExcalidrawElement` variants |
 | `src/Scene.ts` | In-memory scene graph; `SceneElementsMap` keyed by element ID |
 | `src/store.ts` | `Store`, `StoreSnapshot`, `StoreDelta`, `CaptureUpdateAction` — the change capture engine |
@@ -277,7 +272,7 @@ Responsibilities: Pure domain logic for Excalidraw elements; no React or browser
 Responsibilities: Stateless geometric primitives used by element, renderer, and collision code.
 
 | File | Responsibility |
-|---|---|
+| --- | --- |
 | `src/point.ts` | `GlobalPoint`, `LocalPoint` branded types; creation/distance |
 | `src/vector.ts` | 2D vector arithmetic |
 | `src/line.ts` | Line/segment intersection, closest-point |
@@ -292,7 +287,7 @@ Responsibilities: Stateless geometric primitives used by element, renderer, and 
 Responsibilities: Shared constants, event bus, utility types, and browser-agnostic helpers shared across all packages.
 
 | File | Responsibility |
-|---|---|
+| --- | --- |
 | `src/constants.ts` | App-wide constants (keys, themes, tool types, MIME types, limits) |
 | `src/utils.ts` | General utility functions (debounce, throttle, clamp, arrayToMap, etc.) |
 | `src/appEventBus.ts` | Typed application-level event bus (Emitter subclass) |
@@ -311,7 +306,7 @@ Responsibilities: Shared constants, event bus, utility types, and browser-agnost
 Responsibilities: Thin public export utility wrapping the excalidraw library for standalone export use cases (embedding, SSR-safe export).
 
 | File | Responsibility |
-|---|---|
+| --- | --- |
 | `src/export.ts` | Re-exports `exportToCanvas`, `exportToSvg`, clipboard helpers with typed `ExportOpts` |
 | `src/bbox.ts` | Bounding box utilities |
 | `src/shape.ts` | Shape geometry helpers |
@@ -322,7 +317,7 @@ Responsibilities: Thin public export utility wrapping the excalidraw library for
 ## 5. External Dependencies
 
 | Service / Library | Purpose | Where Used |
-|---|---|---|
+| --- | --- | --- |
 | **Firebase Firestore** | Persistent cloud storage for collaborative scenes | `excalidraw-app/data/firebase.ts` |
 | **Firebase Storage** | Binary file (image) storage for shared sessions | `excalidraw-app/data/firebase.ts` |
 | **socket.io WebSocket relay** | Real-time scene + cursor sync during collaboration | `excalidraw-app/collab/Portal.tsx` |

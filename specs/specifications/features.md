@@ -89,6 +89,7 @@ graph TB
 **Description:** The primary tool palette enabling users to create every element type supported by Excalidraw.
 
 **User-facing behavior:**
+
 - Toolbar buttons (or keyboard shortcuts) activate tools: Selection (`V`), Lasso, Rectangle (`R`), Diamond (`D`), Ellipse (`O`), Arrow (`A`), Line (`L`), Freedraw (`P`), Text (`T`), Image, Eraser, Hand, Frame, Magic Frame, Embeddable, and Laser pointer.
 - The active tool changes the cursor and determines what is created on pointer-down/drag.
 - Pressing `Q` or clicking the lock icon keeps the current tool active after drawing (tool lock).
@@ -96,6 +97,7 @@ graph TB
 - In **View Mode**, only `laser` and `hand` tools are available.
 
 **System behavior:**
+
 - `TOOL_TYPE` constant in `packages/common/src/constants.ts` defines every valid tool name string.
 - `AppState.activeTool` (`packages/excalidraw/appState.ts`) tracks the current tool type, whether it is locked, and the `lastActiveTool`.
 - Switching tools calls `updateActiveTool()` (from `@excalidraw/common`) and `setCursorForShape()` from `packages/excalidraw/cursor.ts`.
@@ -105,6 +107,7 @@ graph TB
 - Lasso and eraser tools use animated trails (`LassoTrail`, `EraserTrail` in `packages/excalidraw/lasso/` and `packages/excalidraw/eraser/`) rendered via `AnimatedTrail` and `AnimationFrameHandler`.
 
 **Key source files:**
+
 - `packages/common/src/constants.ts` — `TOOL_TYPE` enum
 - `packages/excalidraw/appState.ts` — default `activeTool` shape
 - `packages/excalidraw/components/App.tsx` — tool switch, lock toggle, per-tool pointer handlers
@@ -120,12 +123,14 @@ graph TB
 **Description:** Per-element visual styling controls exposed in the side panel (Properties panel).
 
 **User-facing behavior:**
+
 - Stroke color, background color, fill style (`hachure`, `cross-hatch`, `solid`, `zigzag`), stroke width, stroke style (`solid`, `dashed`, `dotted`), roundness (`round`/`sharp`), opacity, and arrowhead type are configurable.
 - Font family, font size, text alignment (left/center/right) and vertical alignment (top/middle/bottom) apply to text and text-container elements.
 - Changes apply immediately to all selected elements and are reflected on the canvas.
 - The "Style picker" action (`actionStyles`) copies styling from the first selected element onto the current tool defaults.
 
 **System behavior:**
+
 - Default item properties are maintained in `AppState` as `currentItem*` fields (`packages/excalidraw/appState.ts`).
 - `actionProperties` (`packages/excalidraw/actions/actionProperties.tsx`) registers dozens of sub-actions that each call `newElementWith()` to produce immutable element updates.
 - Color pickers use `DEFAULT_ELEMENT_STROKE_COLOR_PALETTE` / `DEFAULT_ELEMENT_BACKGROUND_COLOR_PALETTE` from `@excalidraw/common`.
@@ -134,6 +139,7 @@ graph TB
 - `deriveStylesPanelMode()` controls which subset of properties is shown based on selected element types.
 
 **Key source files:**
+
 - `packages/excalidraw/actions/actionProperties.tsx`
 - `packages/excalidraw/appState.ts`
 - `packages/excalidraw/components/ColorPicker/ColorPicker.tsx`
@@ -149,6 +155,7 @@ graph TB
 **Description:** Mechanisms for selecting, moving, resizing, rotating, duplicating, aligning, distributing, and deleting elements.
 
 **User-facing behavior:**
+
 - **Box selection** (drag on empty canvas) selects all elements whose bounds intersect the selection rectangle; with Shift held, existing selection is preserved.
 - **Lasso selection** (`lasso` tool) selects elements by free-form path enclosure or intersection.
 - **Overlap box selection** (recently added, `#11053`) selects elements overlapping the drag area.
@@ -164,6 +171,7 @@ graph TB
 - **Deselect** (`Escape`) clears selection and returns to the selection tool.
 
 **System behavior:**
+
 - Selection state is `AppState.selectedElementIds` (map of id → true).
 - `getSelectedElements()` filters the scene respecting group membership via `selectGroupsForSelectedElements()`.
 - `duplicateElements()` (`packages/element/src/duplicate.ts`) deep-copies elements, reassigns IDs, updates frame membership and group IDs.
@@ -173,6 +181,7 @@ graph TB
 - Locked elements are excluded from `getSelectedElements()` unless `includeLocked` is explicitly set.
 
 **Key source files:**
+
 - `packages/excalidraw/actions/actionDuplicateSelection.tsx`
 - `packages/excalidraw/actions/actionAlign.tsx`
 - `packages/excalidraw/actions/actionDistribute.tsx`
@@ -196,6 +205,7 @@ graph TB
 **Description:** Controls for panning, zooming, and configuring the canvas background and display modes.
 
 **User-facing behavior:**
+
 - **Zoom**: `Ctrl/Cmd++`, `Ctrl/Cmd+-`, `Ctrl/Cmd+0` (reset to 100%), scroll wheel, pinch-to-zoom on touch. Zoom range: 10%–3000%.
 - **Pan**: Hand tool (`H`), Space+drag, two-finger scroll/drag on touch.
 - **Scroll to fit**: `Shift+1` fits all elements in view; `Shift+2` fits the selection.
@@ -205,6 +215,7 @@ graph TB
 - Canvas background and theme are persisted in `AppState` and serialized with exports.
 
 **System behavior:**
+
 - `actionZoomIn/Out/Reset` (`packages/excalidraw/actions/actionCanvas.tsx`) call `getNormalizedZoom()` and `getStateForZoom()` from `packages/excalidraw/scene/zoom.ts`.
 - `MIN_ZOOM = 0.1`, `MAX_ZOOM = 30`, `ZOOM_STEP = 0.1` defined in `packages/common/src/constants.ts`.
 - Scroll offsets (`scrollX`, `scrollY`) and zoom value are part of `AppState`; `centerScrollOn()` (`packages/excalidraw/scene/scroll.ts`) recomputes offsets to center a point.
@@ -212,6 +223,7 @@ graph TB
 - `actionChangeViewBackgroundColor` is gated by `UIOptions.canvasActions.changeViewBackgroundColor` and `!appState.viewModeEnabled`.
 
 **Key source files:**
+
 - `packages/excalidraw/actions/actionCanvas.tsx`
 - `packages/excalidraw/scene/zoom.ts`
 - `packages/excalidraw/scene/scroll.ts`
@@ -227,6 +239,7 @@ graph TB
 **Description:** In-canvas text creation and editing using an overlaid WYSIWYG textarea.
 
 **User-facing behavior:**
+
 - Double-clicking a shape attaches a text label (bound text); double-clicking canvas creates a standalone text element.
 - Typing in the WYSIWYG textarea updates the element in real time.
 - Text wraps within container bounds; the container auto-resizes vertically if the text overflows (`actionTextAutoResize`).
@@ -234,6 +247,7 @@ graph TB
 - Text supports CJK characters with dedicated CJK fallback fonts.
 
 **System behavior:**
+
 - `textWysiwyg.tsx` (`packages/excalidraw/wysiwyg/textWysiwyg.tsx`) mounts a `<textarea>` absolutely positioned over the canvas element, synced to the element's scene coordinates via `sceneCoordsToViewportCoords()`.
 - `editingTextElement` in `AppState` tracks the element currently being edited.
 - On commit (blur/Enter for single-line, Escape), `normalizeText()` and `measureText()` from `packages/element/src/textMeasurements.ts` recalculate dimensions; `wrapText()` handles word-wrapping.
@@ -242,6 +256,7 @@ graph TB
 - `charWidth` caching in `@excalidraw/element` optimizes repeated character-width measurements.
 
 **Key source files:**
+
 - `packages/excalidraw/wysiwyg/textWysiwyg.tsx`
 - `packages/element/src/textElement.ts`
 - `packages/element/src/textMeasurements.ts`
@@ -258,12 +273,14 @@ graph TB
 **Description:** Organizational containers — Frames (named rectangular containers) and Groups (logical element groupings).
 
 **User-facing behavior:**
+
 - **Frames** (`F` key): A named rectangle that clips/contains child elements. Selecting all elements in a frame, removing a frame, adding/removing elements to/from frames are supported.
 - **Magic Frames** (`Ctrl+F`): A special frame that can trigger AI/diagram generation.
 - **Groups** (`Ctrl+G`/`Ctrl+Shift+G`): Logical groupings of elements without visual container. Grouped elements move/resize together; double-click enters the group for individual editing.
 - Frames and groups interact: elements inside a frame can also belong to groups; frame membership is enforced on duplicate/move.
 
 **System behavior:**
+
 - `isFrameLikeElement()` (`packages/element/src/typeChecks.ts`) identifies both `frame` and `magicframe` types.
 - `addElementsToFrame()`, `removeAllElementsFromFrame()`, `getFrameChildren()`, `groupByFrameLikes()` (`packages/element/src/frame.ts`) manage frame membership.
 - Frame membership is stored as `ExcalidrawElement.frameId`; this is updated on every drag, duplicate, and paste operation.
@@ -274,6 +291,7 @@ graph TB
 - Frame elements include an optional title that is rendered via `getFrameLikeTitle()` and exported with the canvas.
 
 **Key source files:**
+
 - `packages/excalidraw/actions/actionFrame.ts`
 - `packages/excalidraw/actions/actionGroup.tsx`
 - `packages/element/src/frame.ts`
@@ -289,6 +307,7 @@ graph TB
 **Description:** Smart arrow connections that bind to elements and auto-route, plus flowchart-style node-and-edge creation.
 
 **User-facing behavior:**
+
 - Arrows automatically bind to the nearest bindable element when drawn near it, visualized by a binding highlight.
 - Three arrow styles: **sharp** (straight segments), **round** (curved), **elbow** (orthogonal routing that avoids obstacles).
 - Arrow start/end arrowhead style is configurable (none, arrow, bar, circle, triangle).
@@ -298,6 +317,7 @@ graph TB
 - Binding can be toggled on/off globally via `actionToggleArrowBinding`.
 
 **System behavior:**
+
 - `binding.ts` (`packages/element/src/binding.ts`) provides `getHoveredElementForBinding()`, `bindBindingElement()`, `updateBoundElements()`, and `calculateFixedPointForElbowArrowBinding()`.
 - `elbowArrow.ts` (`packages/element/src/elbowArrow.ts`) computes orthogonal routing via `routeElbowArrow()` using heading vectors and obstacle avoidance; `updateElbowArrowPoints()` is called on every element mutation.
 - `linearElementEditor.ts` (`packages/element/src/linearElementEditor.ts`) tracks the `editingLinearElement` state and handles midpoint add/remove/drag.
@@ -306,6 +326,7 @@ graph TB
 - `fixedPoint` binding (`FixedPointBinding` type) pins an arrow endpoint to a proportional position on the target, surviving resize.
 
 **Key source files:**
+
 - `packages/element/src/binding.ts`
 - `packages/element/src/elbowArrow.ts`
 - `packages/element/src/linearElementEditor.ts`
@@ -322,6 +343,7 @@ graph TB
 **Description:** Inserting raster images and embedding third-party content (iframes) directly on the canvas.
 
 **User-facing behavior:**
+
 - Images can be inserted via the toolbar, file open, drag-and-drop onto the canvas, or paste from clipboard.
 - Supported formats: PNG, JPEG, SVG, WebP, BMP, GIF, AVIF.
 - **Crop tool** (`actionToggleCropEditor`): when a single image is selected, a crop action enters a mode where resize handles adjust the visible region of the image without changing source dimensions.
@@ -329,6 +351,7 @@ graph TB
 - Embedded content type is inferred from the URL (`type: "video" | "generic" | "document"` in element types).
 
 **System behavior:**
+
 - Images are stored as `BinaryFileData` in a separate `files` map (not inline in elements), referenced by `FileId` on the element.
 - `insertImages()` (`App.tsx:11796`) fetches/validates the image, computes natural dimensions, creates an `ExcalidrawImageElement`, and stores the blob in the file cache.
 - `MAX_ALLOWED_FILE_BYTES = 4 * 1024 * 1024` (`packages/common/src/constants.ts`) caps individual file size.
@@ -338,6 +361,7 @@ graph TB
 - `updateImageCache()` (`packages/element/src/image.ts`) renders images to off-screen canvases for use by the renderer; cache is keyed by `FileId + dimensions`.
 
 **Key source files:**
+
 - `packages/excalidraw/actions/actionCropEditor.tsx`
 - `packages/element/src/cropElement.ts`
 - `packages/element/src/image.ts`
@@ -353,6 +377,7 @@ graph TB
 **Description:** Moving data in and out of Excalidraw via the clipboard, local files, and rendered image exports.
 
 **User-facing behavior:**
+
 - **Copy/Cut/Paste** (`Ctrl/Cmd+C/X/V`) operate on selected elements including their bound text and files.
 - Paste accepts: Excalidraw JSON (from clipboard), SVG with embedded scene, plain text (auto-created as text element), image URLs/blobs, and spreadsheet/TSV data (converted to charts).
 - **Copy as PNG** and **Copy as SVG** copy the selected/full scene to the system clipboard as an image.
@@ -362,6 +387,7 @@ graph TB
 - Scene name is editable in the export dialog and saved in `AppState.name`.
 
 **System behavior:**
+
 - `clipboard.ts` (`packages/excalidraw/clipboard.ts`) handles read/write via the async Clipboard API, with Firefox-specific workarounds.
 - `prepareElementsForExport()` (`packages/excalidraw/data/index.ts`) decides whether to export the full scene or only selected elements; if exactly one frame is selected, only elements overlapping that frame are exported.
 - `serializeAsJSON()` (`packages/excalidraw/data/json.ts`) produces a versioned JSON blob (`EXPORT_DATA_TYPES.excalidraw`, `VERSIONS.excalidraw`) including `elements`, cleaned `appState`, and `files`.
@@ -370,6 +396,7 @@ graph TB
 - `cleanAppStateForExport()` zeroes ephemeral fields (selection, dialogs, etc.) before embedding in exports.
 
 **Key source files:**
+
 - `packages/excalidraw/clipboard.ts`
 - `packages/excalidraw/data/index.ts`
 - `packages/excalidraw/data/json.ts`
@@ -388,6 +415,7 @@ graph TB
 **Description:** A personal sticker/shape library for saving and reusing element configurations.
 
 **User-facing behavior:**
+
 - Open the Library sidebar to browse saved library items, each displayed as an SVG thumbnail.
 - Drag or click a library item to insert it onto the canvas at the current position.
 - Select elements and use "Add to library" (`actionAddToLibrary`) to save them.
@@ -396,6 +424,7 @@ graph TB
 - Install community libraries by navigating to `excalidraw.com/libraries` or using a direct install URL (`addLibraryItems` API).
 
 **System behavior:**
+
 - `Library` class (`packages/excalidraw/data/library.ts`) manages an Jotai atom-backed item store with an async `Queue` for serialized updates.
 - Library items are persisted to `localStorage` (keyed by `STORAGE_KEYS.LOCAL_STORAGE_LIBRARY`).
 - `ALLOWED_LIBRARY_URLS` whitelist restricts auto-install to `excalidraw.com` and `raw.githubusercontent.com/excalidraw/excalidraw-libraries`.
@@ -404,6 +433,7 @@ graph TB
 - `restoreLibraryItems()` (`packages/excalidraw/data/restore.ts`) migrates library items across format versions.
 
 **Key source files:**
+
 - `packages/excalidraw/data/library.ts`
 - `packages/excalidraw/actions/actionAddToLibrary.ts`
 - `packages/excalidraw/components/Sidebar/` — library sidebar UI
@@ -418,11 +448,13 @@ graph TB
 **Description:** Multi-step undo/redo that covers element mutations and app state changes.
 
 **User-facing behavior:**
+
 - `Ctrl/Cmd+Z` undoes the last operation; `Ctrl/Cmd+Shift+Z` (or `Ctrl+Y` on Windows) redoes it.
 - History entries are captured at two granularities: `IMMEDIATELY` (on user action completion) and `EVENTUALLY` (debounced for continuous changes like typing or color picking).
 - History is blocked while an active drag, resize, rotation, text edit, multi-element draw, or flowchart creation is in progress.
 
 **System behavior:**
+
 - `History` class (`packages/excalidraw/history.ts`) wraps `StoreDelta` / `HistoryDelta` from `@excalidraw/element`.
 - `HistoryDelta.applyTo()` applies element and appState deltas independently, excluding `version` and `versionNonce` fields (to avoid collisions in collaborative sessions where remote changes must always win).
 - `CaptureUpdateAction` enum (`IMMEDIATELY`, `EVENTUALLY`, `NEVER`) controls whether each action result creates a history entry.
@@ -430,6 +462,7 @@ graph TB
 - The store emits `HistoryChangedEvent` after each push, allowing the UI undo/redo button enabled-state to update reactively via `useEmitter`.
 
 **Key source files:**
+
 - `packages/excalidraw/history.ts`
 - `packages/excalidraw/actions/actionHistory.tsx`
 - `packages/element/src/store.ts` — `Store`, `StoreDelta`, `StoreSnapshot`
@@ -443,6 +476,7 @@ graph TB
 **Description:** Multi-user live editing with cursor sharing, user presence, idle detection, and end-to-end encrypted scene storage on Firebase.
 
 **User-facing behavior:**
+
 - Clicking "Live collaboration" generates a unique room link containing a random room ID and AES-GCM encryption key (`#room=<id>,<key>`).
 - Sharing the link allows others to join; their cursors, usernames, and pointer activity appear on canvas in real time.
 - Collaborator avatars appear in the header; clicking an avatar follows that user's viewport.
@@ -451,6 +485,7 @@ graph TB
 - Files (images) are uploaded to Firebase Storage separately from scene elements, up to `FILE_UPLOAD_MAX_BYTES = 4 MiB` per file.
 
 **System behavior:**
+
 - `Collab.tsx` (`excalidraw-app/collab/Collab.tsx`) is a `PureComponent` managing the WebSocket (socket.io) connection via `Portal.tsx`.
 - Room ID and key are generated by `generateCollaborationLinkData()` (`excalidraw-app/data/index.ts`); the key never leaves the URL fragment and is not transmitted to the server.
 - All WebSocket payloads are AES-GCM encrypted/decrypted via `encryptData()`/`decryptData()` from `packages/excalidraw/data/encryption.ts` using the room key.
@@ -461,6 +496,7 @@ graph TB
 - `FileManager` (`excalidraw-app/data/FileManager.ts`) manages file upload/download lifecycle, deduplicating by `FileId`.
 
 **Key source files:**
+
 - `excalidraw-app/collab/Collab.tsx`
 - `excalidraw-app/collab/Portal.tsx`
 - `excalidraw-app/data/firebase.ts`
@@ -478,12 +514,14 @@ graph TB
 **Description:** Generating structured diagrams from spreadsheet data, Mermaid syntax, or AI text-to-diagram prompts.
 
 **User-facing behavior:**
+
 - **Chart from spreadsheet/TSV**: Pasting tab-separated data onto the canvas triggers chart detection; a picker appears to choose between bar, line, or radar chart types.
 - **Mermaid-to-Excalidraw**: Open the TTD (Text-to-Diagram) dialog (`Ctrl+Shift+Alt+D`), select the "Mermaid" tab, enter Mermaid syntax, and preview/insert the resulting diagram as native Excalidraw elements.
 - **AI Text-to-Diagram**: The "AI" tab in the TTD dialog allows submitting a natural language description; the host application provides an `onTextSubmit` handler to invoke an LLM and return Mermaid/diagram text.
 - Supported Mermaid diagram types include flowchart, sequence, class, state, ER, journey, gantt, pie, mindmap, and more.
 
 **System behavior:**
+
 - `charts/index.ts` (`packages/excalidraw/charts/`) dispatches to `renderBarChart`, `renderLineChart`, or `renderRadarChart` based on `ChartType`.
 - `tryParseSpreadsheet()` (`charts.parse.ts`) tokenizes TSV/CSV clipboard text into `Spreadsheet` rows/series.
 - `isMaybeMermaidDefinition()` (`packages/excalidraw/mermaid.ts`) uses a regex against known Mermaid chart type keywords to heuristically detect Mermaid text in paste operations.
@@ -492,6 +530,7 @@ graph TB
 - Chart elements are created as native Excalidraw elements (rectangles, lines, text) so they are fully editable after insertion.
 
 **Key source files:**
+
 - `packages/excalidraw/charts/index.ts`
 - `packages/excalidraw/charts/charts.parse.ts`
 - `packages/excalidraw/mermaid.ts`
@@ -508,12 +547,14 @@ graph TB
 **Description:** Snap-to-grid, snap-to-object, and midpoint snapping to aid precise element placement.
 
 **User-facing behavior:**
+
 - **Grid mode** (`actionToggleGridMode`): elements snap to a configurable grid (`DEFAULT_GRID_SIZE`, default configurable via `gridSize` / `gridStep` in AppState). A visual grid overlay is shown.
 - **Object snapping** (`actionToggleObjectsSnapMode`): elements snap to edges, centers, and corners of other elements within a snap distance. Snap guidelines are drawn on the canvas.
 - **Midpoint snapping** (`actionToggleMidpointSnapping`): when enabled, linear elements snap to midpoints of target elements.
 - Snap distance is `8 px` scaled by the current zoom level.
 
 **System behavior:**
+
 - `snapping.ts` (`packages/excalidraw/snapping.ts`) computes `PointSnap`, `GapSnap`, and gap-equality snaps by comparing the dragged element's bounds against visible elements' bounds.
 - `getSnapDistance(zoomValue)` scales the 8 px snap distance: `SNAP_DISTANCE / zoomValue`.
 - `VISIBLE_GAPS_LIMIT_PER_AXIS = 99999` caps the number of gap comparisons for performance.
@@ -522,6 +563,7 @@ graph TB
 - Snap lines are stored in `AppState.snapLines` and rendered by the interactive canvas renderer each frame.
 
 **Key source files:**
+
 - `packages/excalidraw/snapping.ts`
 - `packages/excalidraw/actions/actionToggleGridMode.tsx`
 - `packages/excalidraw/actions/actionToggleObjectsSnapMode.tsx`
@@ -538,11 +580,13 @@ graph TB
 **Description:** Custom font management supporting multiple hand-drawn and system fonts with lazy loading and CJK fallback.
 
 **User-facing behavior:**
+
 - Font families available in the font picker: Excalifont (default hand-drawn), Virgil (legacy hand-drawn), Nunito, Lilita, Cascadia Code, Comic Shanns, Liberation, Helvetica, Xiaolai (CJK), plus system Emoji font.
 - Fonts load on demand; the font picker previews font names rendered in their own face.
 - CJK text automatically uses the Xiaolai or Windows CJK fallback font (`CJK_HAND_DRAWN_FALLBACK_FONT`).
 
 **System behavior:**
+
 - `Fonts` class (`packages/excalidraw/fonts/Fonts.ts`) maintains a static `loadedFontsCache` (Set) and a registered fonts Map keyed by numeric `FontFamilyValues`.
 - `loadSceneFonts()` inspects all text elements in the scene, collects unique font families, and calls `document.fonts.load()` via `PromisePool` for concurrent fetching.
 - `ExcalidrawFontFace` (`packages/excalidraw/fonts/ExcalidrawFontFace.ts`) wraps a `FontFace` object, lazily loading the WOFF2 binary on first use.
@@ -551,6 +595,7 @@ graph TB
 - Font names with quotes are normalized (bug fix `#11036`) to prevent CSS `font-family` parse errors.
 
 **Key source files:**
+
 - `packages/excalidraw/fonts/Fonts.ts`
 - `packages/excalidraw/fonts/ExcalidrawFontFace.ts`
 - `packages/excalidraw/fonts/` — individual font index files
@@ -566,11 +611,13 @@ graph TB
 **Description:** Optimized input modes for stylus/tablet users and for presentation pointer highlighting.
 
 **User-facing behavior:**
+
 - **Pen mode**: Auto-detected when a pen input is received; disables touch-panning to prevent accidental palm-triggered canvas movement. Can be toggled manually.
 - **Freedraw with pen**: Pressure-sensitive strokes via `perfect-freehand`; very short strokes on pen-up are discarded as accidental taps.
 - **Laser pointer** (`laser` tool): Draws an animated, fading trail on the canvas without creating persistent elements. The trail color can be customized per collaborator. Available even in View Mode.
 
 **System behavior:**
+
 - `penDetected` and `penMode` are separate `AppState` booleans. `penDetected` is set once on first pen `pointerdown` (`App.tsx:7598–7603`) and auto-enables `penMode`.
 - `togglePenMode()` in `App.tsx:4268` flips `penMode`; when enabled, touch events that do not originate from `"pen"` pointer type are suppressed for drawing.
 - `LaserTrails` (`packages/excalidraw/laser-trails.ts`) extends `AnimatedTrail` with a configurable decay; `DECAY_TIME = 1000` (milliseconds) causes the trail to decay over 1 second after a pointer event.
@@ -578,6 +625,7 @@ graph TB
 - Laser trail points are never stored in the scene; they are ephemeral render-only state.
 
 **Key source files:**
+
 - `packages/excalidraw/components/App.tsx` — `togglePenMode()`, pen detection, freedraw handlers
 - `packages/excalidraw/laser-trails.ts`
 - `packages/excalidraw/animated-trail.ts`
@@ -591,6 +639,7 @@ graph TB
 **Description:** Locks elements to prevent accidental selection, movement, or modification.
 
 **User-facing behavior:**
+
 - `actionToggleElementLock` (`Ctrl/Cmd+Shift+L`) toggles locked state on all selected elements; if all are unlocked it locks them, otherwise it unlocks them.
 - Locked elements cannot be selected by normal pointer or box selection and are excluded from alignment/distribution.
 - `unlockAllElements` context-menu action unlocks every locked element on the canvas and selects them.
@@ -598,11 +647,13 @@ graph TB
 - The toolbar shows a lock icon for the tool lock (keeps current drawing tool active), distinct from element locking.
 
 **System behavior:**
+
 - `ExcalidrawElement.locked: boolean` is a core element property persisted in the scene JSON.
 - `getHitElementsAt()` / `getSelectedElements()` in `packages/element/src/selection.ts` filter out locked elements (`!element.locked || includeLocked === true`).
 - `shouldLock()` helper in `actionElementLock.ts` returns `true` iff every selected element is currently unlocked (all-or-nothing toggle).
 
 **Key source files:**
+
 - `packages/excalidraw/actions/actionElementLock.ts`
 - `packages/element/src/selection.ts`
 - `packages/element/src/typeChecks.ts`
@@ -616,6 +667,7 @@ graph TB
 **Description:** Attaching URLs or in-canvas element references to shapes.
 
 **User-facing behavior:**
+
 - `Ctrl/Cmd+K` opens the hyperlink editor for a selected element; the URL is stored on the element's `link` property.
 - For embeddable elements, the same shortcut sets the embed URL.
 - Clicking or hovering a linked element shows a popup with the link; clicking navigates to the URL.
@@ -623,12 +675,14 @@ graph TB
 - Links to elements pan/zoom the viewport to center and highlight the target element.
 
 **System behavior:**
+
 - `actionLink` (`packages/excalidraw/actions/actionLink.tsx`) sets `appState.showHyperlinkPopup: "editor"` to open the inline editor; the URL is persisted on `element.link`.
 - `actionCopyElementLink` / `actionLinkToElement` (`packages/excalidraw/actions/actionElementLink.tsx`) encode the element ID in the URL hash.
 - `normalizeLink()` from `@excalidraw/common` validates and normalizes URL strings; `isLocalLink()` detects in-page anchor links.
 - On paste, URL-only clipboard text is detected and offered as an embeddable element or hyperlink.
 
 **Key source files:**
+
 - `packages/excalidraw/actions/actionLink.tsx`
 - `packages/excalidraw/actions/actionElementLink.tsx` (if present)
 - `packages/excalidraw/components/hyperlink/Hyperlink.tsx`
@@ -642,17 +696,20 @@ graph TB
 **Description:** A developer/power-user panel showing element dimensions, positions, angles, and font size with direct numeric editing.
 
 **User-facing behavior:**
+
 - Toggle via `actionToggleStats` (or from the menu). Shows general canvas stats and per-element property editors.
 - For selected elements: `x`, `y`, `width`, `height`, `angle` (degrees), font size (text), and multi-element variants.
 - Values are directly editable via drag inputs; changes are applied in real time.
 
 **System behavior:**
+
 - `packages/excalidraw/components/Stats/` implements individual stat components: `Position`, `Dimension`, `Angle`, `FontSize`, and multi-element variants (`MultiPosition`, `MultiDimension`, etc.).
 - `STATS_PANELS` bitmask (`packages/common/src/constants.ts`) controls which panels are open.
 - `appState.stats.open` / `appState.stats.panels` store visibility state, persisted in browser localStorage.
 - Drag inputs use `DragInput` component with numeric step handling.
 
 **Key source files:**
+
 - `packages/excalidraw/components/Stats/index.tsx`
 - `packages/excalidraw/components/Stats/` — all stat sub-components
 - `packages/excalidraw/actions/actionToggleStats.tsx`
@@ -666,18 +723,21 @@ graph TB
 **Description:** A fuzzy-search command launcher providing keyboard-accessible access to all registered actions.
 
 **User-facing behavior:**
+
 - `Ctrl/Cmd+/` opens the Command Palette dialog.
 - Typing filters all registered actions and UI shortcuts by name using fuzzy matching (with `deburr` normalization for accented characters).
 - Selecting an entry executes the action or navigates to the relevant tool/dialog.
 - Shows keyboard shortcut hints beside each item.
 
 **System behavior:**
+
 - `CommandPalette.tsx` (`packages/excalidraw/components/CommandPalette/CommandPalette.tsx`) uses the `fuzzy` library against all action labels (via `t()` i18n) and deburr-normalized strings.
 - Actions are sourced from the `ActionManager` and augmented with static command entries (lock toggle, shape shortcuts, etc.).
 - `deburr()` (`packages/excalidraw/deburr.ts`) strips diacritics for accent-insensitive matching.
 - `actionToggleSearchMenu` manages the `openDialog` state toggling the palette open/closed.
 
 **Key source files:**
+
 - `packages/excalidraw/components/CommandPalette/CommandPalette.tsx`
 - `packages/excalidraw/actions/actionToggleSearchMenu.ts`
 - `packages/excalidraw/deburr.ts`
@@ -948,6 +1008,7 @@ stateDiagram-v2
 ## 5. Business Rules
 
 ### BR-01: Tool Auto-Reset After Drawing
+
 **Source:** `packages/excalidraw/components/App.tsx:4219–4238`, `packages/excalidraw/appState.ts`
 
 After completing a single draw operation (pointerup), tools revert to `selection` **unless** `activeTool.locked` is `true`. The locked flag is independent of the tool type and is toggled with `Q` or the toolbar lock button. Crucially, `freedraw` never auto-resets because multi-stroke drawings are expected.
@@ -955,6 +1016,7 @@ After completing a single draw operation (pointerup), tools revert to `selection
 ---
 
 ### BR-02: History Is Blocked During Active Operations
+
 **Source:** `packages/excalidraw/actions/actionHistory.tsx:37–51`
 
 Undo/redo is a no-op while any of the following are true: `multiElement`, `resizingElement`, `editingTextElement`, `newElement`, `selectedElementsAreBeingDragged`, `selectionElement`, or `flowChartCreator.isCreatingChart`. This prevents partial-state snapshots from entering the history stack mid-gesture.
@@ -962,6 +1024,7 @@ Undo/redo is a no-op while any of the following are true: `multiElement`, `resiz
 ---
 
 ### BR-03: History Excludes `version` and `versionNonce`
+
 **Source:** `packages/excalidraw/history.ts` — `HistoryDelta.applyTo()` `excludedProperties`
 
 When applying undo/redo deltas, `version` and `versionNonce` are excluded to ensure that a local undo still produces a new version number. This is necessary for collaboration: remote clients always accept higher-versioned elements, so a re-applied old state must still look "newer" than what remote clients have.
@@ -969,6 +1032,7 @@ When applying undo/redo deltas, `version` and `versionNonce` are excluded to ens
 ---
 
 ### BR-04: Collaboration Encryption Key Never Sent to Server
+
 **Source:** `excalidraw-app/collab/Collab.tsx:491`, `excalidraw-app/data/index.ts`
 
 The AES-GCM encryption key for a collaboration room is embedded only in the URL **fragment** (`#room=<roomId>,<roomKey>`). The fragment is never sent in HTTP requests. The server (Firebase / socket.io) only sees the room ID; it cannot decrypt scene data.
@@ -976,6 +1040,7 @@ The AES-GCM encryption key for a collaboration room is embedded only in the URL 
 ---
 
 ### BR-05: File Upload Size Hard Limit
+
 **Source:** `excalidraw-app/app_constants.ts:12`, `packages/common/src/constants.ts`
 
 `FILE_UPLOAD_MAX_BYTES = 4 MiB` caps files uploaded to Firebase Storage per image. `MAX_ALLOWED_FILE_BYTES = 4 MiB` (same value) caps locally inserted image files. Files exceeding this limit are rejected with an error message, preventing oversized blobs from being shared.
@@ -983,6 +1048,7 @@ The AES-GCM encryption key for a collaboration room is embedded only in the URL 
 ---
 
 ### BR-06: Library Install URL Whitelist
+
 **Source:** `packages/excalidraw/data/library.ts:54–57`
 
 Auto-installation of libraries from URLs is restricted to `excalidraw.com` (matched from the end of the hostname) and `raw.githubusercontent.com/excalidraw/excalidraw-libraries` (matched from the start of the pathname). Installing from any other origin requires the host application to explicitly pass a custom `allowedLibraryUrls` list to the `Library` constructor.
@@ -990,6 +1056,7 @@ Auto-installation of libraries from URLs is restricted to `excalidraw.com` (matc
 ---
 
 ### BR-07: Locked Elements Inside Frames Cannot Be Individually Unlocked
+
 **Source:** `packages/excalidraw/actions/actionElementLock.ts` — `predicate`
 
 If an element has both `locked === true` and a non-null `frameId`, the `toggleElementLock` action predicate returns `false`, making the action unavailable. The element can only be unlocked via `unlockAllElements`, which operates globally. This prevents orphaned locked elements from blocking frame interactions.
@@ -997,6 +1064,7 @@ If an element has both `locked === true` and a non-null `frameId`, the `toggleEl
 ---
 
 ### BR-08: Elbow Arrows Re-Route on Every Mutation
+
 **Source:** `packages/element/src/elbowArrow.ts`, `packages/element/src/binding.ts`
 
 Every time a node element moves, resizes, or changes angle, `updateElbowArrowPoints()` is called for all bound elbow arrows. The routing algorithm (`routeElbowArrow()`) recomputes the full orthogonal path using heading vectors and an obstacle grid. There is no caching of routes; re-routing is always fresh to guarantee correctness.
@@ -1004,6 +1072,7 @@ Every time a node element moves, resizes, or changes angle, `updateElbowArrowPoi
 ---
 
 ### BR-09: Grid Mode and Object Snap Are Mutually Exclusive
+
 **Source:** `packages/excalidraw/actions/actionToggleGridMode.tsx:26`
 
 Enabling grid mode (`gridModeEnabled: true`) simultaneously sets `objectsSnapModeEnabled: false`. The two snapping systems cannot be active simultaneously. Users must explicitly re-enable object snap after switching to grid mode.
@@ -1011,6 +1080,7 @@ Enabling grid mode (`gridModeEnabled: true`) simultaneously sets `objectsSnapMod
 ---
 
 ### BR-10: Short Freedraw Strokes Are Silently Discarded
+
 **Source:** `packages/excalidraw/components/App.tsx:7547–7555`
 
 During a freedraw stroke, if a second `pointerdown` event fires (e.g., a second finger touch on a tablet), the in-progress freedraw element is evaluated: if it has fewer than a threshold number of points (very short), it is discarded entirely as an accidental input. Otherwise, it is finalized. This heuristic prevents single-tap spikes when palm rejection fails.
@@ -1018,6 +1088,7 @@ During a freedraw stroke, if a second `pointerdown` event fires (e.g., a second 
 ---
 
 ### BR-11: Minimum Crop Area Enforced
+
 **Source:** `packages/element/src/cropElement.ts` — `MINIMAL_CROP_SIZE = 10`
 
 The crop tool enforces a minimum crop area of 10 px in both dimensions. Attempting to drag a crop handle below this threshold clamps the crop rectangle to the minimum size, preventing degenerate zero-size image crops.
@@ -1025,6 +1096,7 @@ The crop tool enforces a minimum crop area of 10 px in both dimensions. Attempti
 ---
 
 ### BR-12: Zoom Range Is Clamped
+
 **Source:** `packages/common/src/constants.ts` — `MIN_ZOOM = 0.1`, `MAX_ZOOM = 30`
 
 The canvas zoom level is always clamped to the range `[0.1, 30]` (10%–3000%). `getNormalizedZoom()` in `packages/excalidraw/scene/` enforces this. Values outside the range are silently clamped, never causing an error but also never exceeding the supported rendering range.
@@ -1032,6 +1104,7 @@ The canvas zoom level is always clamped to the range `[0.1, 30]` (10%–3000%). 
 ---
 
 ### BR-13: Snap Distance Scales Inversely with Zoom
+
 **Source:** `packages/excalidraw/snapping.ts` — `getSnapDistance()`
 
 The snap detection distance is `8 px / zoomValue`. At zoom-out (small `zoomValue`), the snap distance in scene units grows proportionally so snapping remains usable at small scales. At extreme zoom-in, the threshold shrinks to maintain spatial precision.
@@ -1039,10 +1112,11 @@ The snap detection distance is `8 px / zoomValue`. At zoom-out (small `zoomValue
 ---
 
 ### BR-14: Text Element Bound to Container Cannot Exist Without Container
+
 **Source:** `packages/element/src/textElement.ts`, `packages/excalidraw/actions/actionBoundText.tsx`
 
 A bound text element's `containerId` must reference an existing, non-deleted container element. On export, restore, and reconcile operations, orphaned bound text elements (whose container was deleted) are removed. `getBoundTextElement()` returns `null` for deleted containers, and `getContainerElement()` checks `isDeleted`.
 
 ---
 
-*Generated from source code analysis of Excalidraw as of 2026-04-10.*
+_Generated from source code analysis of Excalidraw as of 2026-04-10._
