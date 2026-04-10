@@ -1,15 +1,13 @@
 # Implementation Plan: Remove Dead Code — Unused Ellipse Utility Functions
 
-**Feature Branch**: `EXCAL1-5-copy-of-compliance`
-**Created**: 2026-04-10
-**Status**: Ready for implementation
+**Feature Branch**: `EXCAL1-5-copy-of-compliance` **Created**: 2026-04-10 **Status**: Ready for implementation
 
 ---
 
 ## Technical Context
 
 | Aspect | Detail |
-|--------|--------|
+| --- | --- |
 | Target file | `packages/utils/src/shape.ts` |
 | Functions to remove | `ellipseFocusToCenter` (lines 507–513), `ellipseExtremes` (lines 515–544) |
 | Dependencies | Both depend on `ellipseAxes` (line 489) — retained per spec scope |
@@ -23,7 +21,7 @@
 ## Constitution Check
 
 | Principle | Status | Notes |
-|-----------|--------|-------|
+| --- | --- | --- |
 | Type Safety First | PASS | Removal of unused exports cannot introduce type errors |
 | Functional Paradigm | PASS | No paradigm changes |
 | Naming Conventions | PASS | No new code introduced |
@@ -47,6 +45,7 @@
 3. **Clean up whitespace** — Ensure no extra blank lines remain at the end of the file after deletion
 
 **What stays unchanged**:
+
 - `ellipseAxes` (lines 489–505) — retained per spec decision
 - All imports at top of file — all symbols still used by other functions
 - All other functions in the file
@@ -66,11 +65,13 @@
 **No new tests are required.** This is a pure removal of dead code — no behavior changes.
 
 **Verification plan**:
+
 - `yarn test:typecheck` confirms no type errors introduced
 - `yarn test:update` confirms all existing tests pass (especially `packages/utils/tests/geometry.test.ts` which tests other ellipse functions from the same file)
 - Codebase grep confirms the functions are fully removed
 
 **Existing test files verified unaffected**:
+
 - `packages/utils/tests/geometry.test.ts` — imports only `pointInEllipse`, `pointOnEllipse`, `Ellipse` from `shape.ts`
 
 ---
@@ -78,7 +79,7 @@
 ## Risk Assessment
 
 | Risk | Likelihood | Mitigation |
-|------|-----------|------------|
+| --- | --- | --- |
 | External consumer depends on these functions | Very Low | Functions are not in the public API surface (`index.ts` does not export from `shape.ts`) |
 | Removing functions breaks build | None | Functions have zero import sites in the codebase |
 | `ellipseAxes` removal cascade | N/A | Explicitly out of scope per spec — retained as-is |
@@ -87,10 +88,10 @@
 
 ## Artifacts Generated
 
-| Artifact | Path |
-|----------|------|
-| Research | `specs/EXCAL1-5-copy-of-compliance/research.md` |
-| Data Model | `specs/EXCAL1-5-copy-of-compliance/data-model.md` |
-| Plan (this file) | `specs/EXCAL1-5-copy-of-compliance/plan.md` |
-| Contracts | N/A — no public API affected |
-| Workflows | N/A — no internal processes |
+| Artifact         | Path                                              |
+| ---------------- | ------------------------------------------------- |
+| Research         | `specs/EXCAL1-5-copy-of-compliance/research.md`   |
+| Data Model       | `specs/EXCAL1-5-copy-of-compliance/data-model.md` |
+| Plan (this file) | `specs/EXCAL1-5-copy-of-compliance/plan.md`       |
+| Contracts        | N/A — no public API affected                      |
+| Workflows        | N/A — no internal processes                       |

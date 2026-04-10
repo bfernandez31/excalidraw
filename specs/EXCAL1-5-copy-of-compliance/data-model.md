@@ -1,7 +1,6 @@
 # Data Model: Remove Dead Code — Unused Ellipse Utility Functions
 
-**Feature Branch**: `EXCAL1-5-copy-of-compliance`
-**Created**: 2026-04-10
+**Feature Branch**: `EXCAL1-5-copy-of-compliance` **Created**: 2026-04-10
 
 ---
 
@@ -24,7 +23,7 @@ Not applicable — no new validation introduced.
 ## Summary
 
 | Aspect | Impact |
-|--------|--------|
+| --- | --- |
 | New entities | None |
 | Modified entities | None |
 | Removed entities | None |

@@ -1,8 +1,6 @@
 # Specification Quality Checklist: Remove Dead Code — Unused Ellipse Utility Functions
 
-**Purpose**: Validate specification completeness and quality before proceeding to planning
-**Created**: 2026-04-10
-**Feature**: [spec.md](../spec.md)
+**Purpose**: Validate specification completeness and quality before proceeding to planning **Created**: 2026-04-10 **Feature**: [spec.md](../spec.md)
 
 ## Content Quality
 

@@ -1,11 +1,8 @@
 # Feature Specification: Remove Dead Code — Unused Ellipse Utility Functions
 
-**Feature Branch**: `EXCAL1-5-copy-of-compliance`
-**Created**: 2026-04-10
-**Status**: Draft
-**Input**: Health scan found 2 compliance violations for principle "Dead Code": exported functions `ellipseFocusToCenter` and `ellipseExtremes` in `packages/utils/src/shape.ts` are not imported anywhere in the codebase and were last modified over 30 days ago (2025-05-09).
+**Feature Branch**: `EXCAL1-5-copy-of-compliance` **Created**: 2026-04-10 **Status**: Draft **Input**: Health scan found 2 compliance violations for principle "Dead Code": exported functions `ellipseFocusToCenter` and `ellipseExtremes` in `packages/utils/src/shape.ts` are not imported anywhere in the codebase and were last modified over 30 days ago (2025-05-09).
 
-## Auto-Resolved Decisions *(mandatory when clarification policies apply)*
+## Auto-Resolved Decisions _(mandatory when clarification policies apply)_
 
 - **Decision**: Whether to deprecate (keep with warning) or fully remove the dead functions
 - **Policy Applied**: AUTO → CONSERVATIVE
@@ -27,7 +24,7 @@
   2. Removing only the two flagged functions keeps the change minimal and scoped to the compliance finding
 - **Reviewer Notes**: Verify whether `ellipseAxes` has other callers before considering it for future dead code cleanup
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Codebase Compliance with Dead Code Policy (Priority: P1)
 
@@ -66,7 +63,7 @@ As a developer using the Excalidraw library, I want to be confident that removin
 - What happens if a re-export file (index.ts or barrel file) references these functions? Removal must include cleaning up any re-exports.
 - What happens if these functions are referenced in comments or documentation? References should be removed to avoid confusion.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -76,7 +73,7 @@ As a developer using the Excalidraw library, I want to be confident that removin
 - **FR-004**: The removal MUST NOT affect any other functions in the same file or package
 - **FR-005**: All existing tests MUST continue to pass after removal without modification
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

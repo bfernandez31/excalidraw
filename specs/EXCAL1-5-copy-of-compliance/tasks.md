@@ -1,13 +1,13 @@
 # Tasks: Remove Dead Code — Unused Ellipse Utility Functions
 
-**Input**: Design documents from `/specs/EXCAL1-5-copy-of-compliance/`
-**Prerequisites**: plan.md (required), spec.md (required), research.md, data-model.md
+**Input**: Design documents from `/specs/EXCAL1-5-copy-of-compliance/` **Prerequisites**: plan.md (required), spec.md (required), research.md, data-model.md
 
 **Tests**: No new test files required — this is a pure dead code removal. Verification relies on existing tests passing unchanged.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
 ## Format: `[ID] [P?] [Story] Description`
+
 - **[P]**: Can run in parallel (different files, no dependencies)
 - **[Story]**: Which user story this task belongs to (e.g., US1, US2)
 - Include exact file paths in descriptions
@@ -18,7 +18,7 @@
 
 **Purpose**: No project setup needed — this is a modification to an existing codebase with no new dependencies or configuration.
 
-*(No tasks — the project is already initialized and the target file exists)*
+_(No tasks — the project is already initialized and the target file exists)_
 
 ---
 
@@ -26,7 +26,7 @@
 
 **Purpose**: No foundational work needed — no new infrastructure, schemas, or frameworks required for dead code removal.
 
-*(No tasks — all prerequisites are already in place)*
+_(No tasks — all prerequisites are already in place)_
 
 ---
 
@@ -38,9 +38,9 @@
 
 ### Implementation for User Story 1
 
-- [ ] T001 [US1] Remove the `ellipseFocusToCenter` function (lines 507-513) from `packages/utils/src/shape.ts`
-- [ ] T002 [US1] Remove the `ellipseExtremes` function (lines 515-544) from `packages/utils/src/shape.ts`
-- [ ] T003 [US1] Clean up any trailing blank lines or whitespace artifacts left after deletion in `packages/utils/src/shape.ts`
+- [x] T001 [US1] Remove the `ellipseFocusToCenter` function (lines 507-513) from `packages/utils/src/shape.ts` ✅ DONE
+- [x] T002 [US1] Remove the `ellipseExtremes` function (lines 515-544) from `packages/utils/src/shape.ts` ✅ DONE
+- [x] T003 [US1] Clean up any trailing blank lines or whitespace artifacts left after deletion in `packages/utils/src/shape.ts` ✅ DONE
 
 **Checkpoint**: Both functions removed from source. Ready for verification.
 
@@ -54,10 +54,10 @@
 
 ### Verification for User Story 2
 
-- [ ] T004 [US2] Run `yarn test:typecheck` and confirm zero type errors in `packages/utils/src/shape.ts`
-- [ ] T005 [P] [US2] Run `yarn test:update` and confirm all existing tests pass (especially `packages/utils/tests/geometry.test.ts`)
-- [ ] T006 [P] [US2] Grep the entire codebase for `ellipseFocusToCenter` and `ellipseExtremes` — confirm no remaining references outside spec files and git history
-- [ ] T007 [US2] Run `yarn fix` to auto-fix any formatting/linting issues in `packages/utils/src/shape.ts`
+- [x] T004 [US2] Run `yarn test:typecheck` and confirm zero type errors in `packages/utils/src/shape.ts` ✅ DONE
+- [x] T005 [P] [US2] Run `yarn test:update` and confirm all existing tests pass (especially `packages/utils/tests/geometry.test.ts`) ✅ DONE
+- [x] T006 [P] [US2] Grep the entire codebase for `ellipseFocusToCenter` and `ellipseExtremes` — confirm no remaining references outside spec files and git history ✅ DONE
+- [x] T007 [US2] Run `yarn fix` to auto-fix any formatting/linting issues in `packages/utils/src/shape.ts` ✅ DONE
 
 **Checkpoint**: All verification passes. The removal is confirmed safe.
 

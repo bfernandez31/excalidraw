@@ -1,7 +1,6 @@
 # Research: Remove Dead Code — Unused Ellipse Utility Functions
 
-**Feature Branch**: `EXCAL1-5-copy-of-compliance`
-**Created**: 2026-04-10
+**Feature Branch**: `EXCAL1-5-copy-of-compliance` **Created**: 2026-04-10
 
 ---
 
@@ -10,13 +9,13 @@
 ### Files to Modify
 
 | File | What it covers | Action |
-|------|---------------|--------|
+| --- | --- | --- |
 | `packages/utils/src/shape.ts` | Pure geometric shape definitions and utility functions for ellipses, polygons, curves, polylines | **Modify** — remove `ellipseFocusToCenter` (lines 507–513) and `ellipseExtremes` (lines 515–544) |
 
 ### Files NOT Affected (Verified)
 
 | File | What it covers | Why unaffected |
-|------|---------------|----------------|
+| --- | --- | --- |
 | `packages/utils/src/index.ts` | Barrel exports for `@excalidraw/utils` | Does NOT re-export from `shape.ts` — no changes needed |
 | `packages/utils/tests/geometry.test.ts` | Geometry tests importing `pointInEllipse`, `pointOnEllipse`, `Ellipse` from `shape.ts` | Does not reference `ellipseFocusToCenter`, `ellipseExtremes`, or `ellipseAxes` — no changes needed |
 

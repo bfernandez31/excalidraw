@@ -101,7 +101,6 @@ export type GeometricShape<Point extends GlobalPoint | LocalPoint> =
       type: "polycurve";
       data: Polycurve<Point>;
     };
-
 type RectangularElement =
   | ExcalidrawRectangleElement
   | ExcalidrawDiamondElement
@@ -502,43 +501,4 @@ export const ellipseAxes = <Point extends LocalPoint | GlobalPoint>(
     majorAxis,
     minorAxis,
   };
-};
-
-export const ellipseFocusToCenter = <Point extends LocalPoint | GlobalPoint>(
-  ellipse: Ellipse<Point>,
-) => {
-  const { majorAxis, minorAxis } = ellipseAxes(ellipse);
-
-  return Math.sqrt(majorAxis ** 2 - minorAxis ** 2);
-};
-
-export const ellipseExtremes = <Point extends LocalPoint | GlobalPoint>(
-  ellipse: Ellipse<Point>,
-) => {
-  const { center, angle } = ellipse;
-  const { majorAxis, minorAxis } = ellipseAxes(ellipse);
-
-  const cos = Math.cos(angle);
-  const sin = Math.sin(angle);
-
-  const sqSum = majorAxis ** 2 + minorAxis ** 2;
-  const sqDiff = (majorAxis ** 2 - minorAxis ** 2) * Math.cos(2 * angle);
-
-  const yMax = Math.sqrt((sqSum - sqDiff) / 2);
-  const xAtYMax =
-    (yMax * sqSum * sin * cos) /
-    (majorAxis ** 2 * sin ** 2 + minorAxis ** 2 * cos ** 2);
-
-  const xMax = Math.sqrt((sqSum + sqDiff) / 2);
-  const yAtXMax =
-    (xMax * sqSum * sin * cos) /
-    (majorAxis ** 2 * cos ** 2 + minorAxis ** 2 * sin ** 2);
-  const centerVector = vectorFromPoint(center);
-
-  return [
-    vectorAdd(vector(xAtYMax, yMax), centerVector),
-    vectorAdd(vectorScale(vector(xAtYMax, yMax), -1), centerVector),
-    vectorAdd(vector(xMax, yAtXMax), centerVector),
-    vectorAdd(vector(xMax, yAtXMax), centerVector),
-  ];
 };
