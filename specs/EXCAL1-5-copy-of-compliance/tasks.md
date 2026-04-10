@@ -67,7 +67,7 @@ _(No tasks — all prerequisites are already in place)_
 
 **Purpose**: Final cleanup before commit.
 
-- [ ] T008 Commit changes with descriptive message referencing ticket EXCAL1-5
+- [x] T008 Commit changes with descriptive message referencing ticket EXCAL1-5 ✅ DONE
 
 ---
 
