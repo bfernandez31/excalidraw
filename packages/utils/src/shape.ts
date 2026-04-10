@@ -376,23 +376,32 @@ export const segmentIntersectRectangleElement = <
     (bounds[1] + bounds[3]) / 2,
   );
 
+  const topLeft = pointRotateRads(
+    pointFrom(bounds[0], bounds[1]),
+    center,
+    element.angle,
+  );
+  const topRight = pointRotateRads(
+    pointFrom(bounds[2], bounds[1]),
+    center,
+    element.angle,
+  );
+  const bottomRight = pointRotateRads(
+    pointFrom(bounds[2], bounds[3]),
+    center,
+    element.angle,
+  );
+  const bottomLeft = pointRotateRads(
+    pointFrom(bounds[0], bounds[3]),
+    center,
+    element.angle,
+  );
+
   return [
-    lineSegment(
-      pointRotateRads(pointFrom(bounds[0], bounds[1]), center, element.angle),
-      pointRotateRads(pointFrom(bounds[2], bounds[1]), center, element.angle),
-    ),
-    lineSegment(
-      pointRotateRads(pointFrom(bounds[2], bounds[1]), center, element.angle),
-      pointRotateRads(pointFrom(bounds[2], bounds[3]), center, element.angle),
-    ),
-    lineSegment(
-      pointRotateRads(pointFrom(bounds[2], bounds[3]), center, element.angle),
-      pointRotateRads(pointFrom(bounds[0], bounds[3]), center, element.angle),
-    ),
-    lineSegment(
-      pointRotateRads(pointFrom(bounds[0], bounds[3]), center, element.angle),
-      pointRotateRads(pointFrom(bounds[0], bounds[1]), center, element.angle),
-    ),
+    lineSegment(topLeft, topRight),
+    lineSegment(topRight, bottomRight),
+    lineSegment(bottomRight, bottomLeft),
+    lineSegment(bottomLeft, topLeft),
   ]
     .map((s) => segmentsIntersectAt(segment, s))
     .filter((i): i is Point => !!i);
@@ -479,26 +488,6 @@ export const pointInEllipse = <Point extends LocalPoint | GlobalPoint>(
   );
 
   return (
-    (rotatedPointX / halfWidth) * (rotatedPointX / halfWidth) +
-      (rotatedPointY / halfHeight) * (rotatedPointY / halfHeight) <=
-    1
+    (rotatedPointX / halfWidth) ** 2 + (rotatedPointY / halfHeight) ** 2 <= 1
   );
-};
-
-export const ellipseAxes = <Point extends LocalPoint | GlobalPoint>(
-  ellipse: Ellipse<Point>,
-) => {
-  const widthGreaterThanHeight = ellipse.halfWidth > ellipse.halfHeight;
-
-  const majorAxis = widthGreaterThanHeight
-    ? ellipse.halfWidth * 2
-    : ellipse.halfHeight * 2;
-  const minorAxis = widthGreaterThanHeight
-    ? ellipse.halfHeight * 2
-    : ellipse.halfWidth * 2;
-
-  return {
-    majorAxis,
-    minorAxis,
-  };
 };
