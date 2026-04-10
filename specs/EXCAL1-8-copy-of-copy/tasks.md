@@ -27,27 +27,27 @@ This task list organizes the work to remove dead code compliance violations by d
 
 ### Phase 1: Setup (Project Verification)
 
-- [ ] T001 Verify no imports of target functions exist
-- [ ] T002 Confirm current test suite passes baseline
-- [ ] T003 Check TypeScript compilation baseline
-- [ ] T004 Verify linting passes baseline
+- [x] T001 Verify no imports of target functions exist
+- [x] T002 Confirm current test suite passes baseline
+- [x] T003 Check TypeScript compilation baseline
+- [x] T004 Verify linting passes baseline
 
 ### Phase 2: Implementation (User Story US1)
 
-- [ ] T005 [US1] Remove `ellipseFocusToCenter` function from packages/utils/src/shape.ts
-- [ ] T006 [US1] Remove `ellipseExtremes` function from packages/utils/src/shape.ts
-- [ ] T007 [US1] Verify functions are completely removed from file
-- [ ] T008 [US1] Run full test suite to ensure no breaking changes
-- [ ] T009 [US1] Execute TypeScript type checking
-- [ ] T010 [US1] Run ESLint to verify no new warnings
-- [ ] T011 [US1] Check build process completes successfully
+- [x] T005 [US1] Remove `ellipseFocusToCenter` function from packages/utils/src/shape.ts
+- [x] T006 [US1] Remove `ellipseExtremes` function from packages/utils/src/shape.ts
+- [x] T007 [US1] Verify functions are completely removed from file
+- [x] T008 [US1] Run full test suite to ensure no breaking changes
+- [x] T009 [US1] Execute TypeScript type checking
+- [x] T010 [US1] Run ESLint to verify no new warnings
+- [x] T011 [US1] Check build process completes successfully
 
 ### Phase 3: Verification & Polish
 
-- [ ] T012 Run compliance scan to confirm violations resolved
-- [ ] T013 Verify code coverage metrics remain stable
-- [ ] T014 Update documentation if any references found
-- [ ] T015 Final verification: grep search confirms no remaining references
+- [x] T012 Run compliance scan to confirm violations resolved
+- [x] T013 Verify code coverage metrics remain stable
+- [x] T014 Update documentation if any references found
+- [x] T015 Final verification: grep search confirms no remaining references
 
 ## Dependencies
 
