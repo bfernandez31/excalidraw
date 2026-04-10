@@ -117,29 +117,31 @@ export const getPolygonShape = <Point extends GlobalPoint | LocalPoint>(
   element: RectangularElement,
 ): GeometricShape<Point> => {
   const { angle, width, height, x, y } = element;
-
   const cx = x + width / 2;
   const cy = y + height / 2;
-
   const center: Point = pointFrom(cx, cy);
 
-  let data: Polygon<Point>;
+  const points =
+    element.type === "diamond"
+      ? [
+          pointFrom(cx, y),
+          pointFrom(x + width, cy),
+          pointFrom(cx, y + height),
+          pointFrom(x, cy),
+        ]
+      : [
+          pointFrom(x, y),
+          pointFrom(x + width, y),
+          pointFrom(x + width, y + height),
+          pointFrom(x, y + height),
+        ];
 
-  if (element.type === "diamond") {
-    data = polygon(
-      pointRotateRads(pointFrom(cx, y), center, angle),
-      pointRotateRads(pointFrom(x + width, cy), center, angle),
-      pointRotateRads(pointFrom(cx, y + height), center, angle),
-      pointRotateRads(pointFrom(x, cy), center, angle),
-    );
-  } else {
-    data = polygon(
-      pointRotateRads(pointFrom(x, y), center, angle),
-      pointRotateRads(pointFrom(x + width, y), center, angle),
-      pointRotateRads(pointFrom(x + width, y + height), center, angle),
-      pointRotateRads(pointFrom(x, y + height), center, angle),
-    );
-  }
+  const data = polygon(
+    pointRotateRads(points[0], center, angle),
+    pointRotateRads(points[1], center, angle),
+    pointRotateRads(points[2], center, angle),
+    pointRotateRads(points[3], center, angle),
+  );
 
   return {
     type: "polygon",
@@ -153,23 +155,38 @@ export const getSelectionBoxShape = <Point extends GlobalPoint | LocalPoint>(
   elementsMap: ElementsMap,
   padding = 10,
 ) => {
-  let [x1, y1, x2, y2, cx, cy] = getElementAbsoluteCoords(
+  const [x1, y1, x2, y2, cx, cy] = getElementAbsoluteCoords(
     element,
     elementsMap,
     true,
   );
 
-  x1 -= padding;
-  x2 += padding;
-  y1 -= padding;
-  y2 += padding;
+  const paddedX1 = x1 - padding;
+  const paddedX2 = x2 + padding;
+  const paddedY1 = y1 - padding;
+  const paddedY2 = y2 + padding;
 
-  //const angleInDegrees = angleToDegrees(element.angle);
   const center = pointFrom(cx, cy);
-  const topLeft = pointRotateRads(pointFrom(x1, y1), center, element.angle);
-  const topRight = pointRotateRads(pointFrom(x2, y1), center, element.angle);
-  const bottomLeft = pointRotateRads(pointFrom(x1, y2), center, element.angle);
-  const bottomRight = pointRotateRads(pointFrom(x2, y2), center, element.angle);
+  const topLeft = pointRotateRads(
+    pointFrom(paddedX1, paddedY1),
+    center,
+    element.angle,
+  );
+  const topRight = pointRotateRads(
+    pointFrom(paddedX2, paddedY1),
+    center,
+    element.angle,
+  );
+  const bottomLeft = pointRotateRads(
+    pointFrom(paddedX1, paddedY2),
+    center,
+    element.angle,
+  );
+  const bottomRight = pointRotateRads(
+    pointFrom(paddedX2, paddedY2),
+    center,
+    element.angle,
+  );
 
   return {
     type: "polygon",
@@ -224,20 +241,19 @@ export const getCurveShape = <Point extends GlobalPoint | LocalPoint>(
 
   const ops = getCurvePathOps(roughShape);
   const polycurve: Polycurve<Point> = [];
-  let p0 = pointFrom<Point>(0, 0);
+  let currentPoint = pointFrom<Point>(0, 0);
 
   for (const op of ops) {
     if (op.op === "move") {
-      const p = pointFromArray<Point>(op.data);
-      invariant(p != null, "Ops data is not a point");
-      p0 = transform(p);
-    }
-    if (op.op === "bcurveTo") {
+      const point = pointFromArray<Point>(op.data);
+      invariant(point != null, "Ops data is not a point");
+      currentPoint = transform(point);
+    } else if (op.op === "bcurveTo") {
       const p1 = transform(pointFrom<Point>(op.data[0], op.data[1]));
       const p2 = transform(pointFrom<Point>(op.data[2], op.data[3]));
       const p3 = transform(pointFrom<Point>(op.data[4], op.data[5]));
-      polycurve.push(curve<Point>(p0, p1, p2, p3));
-      p0 = p3;
+      polycurve.push(curve<Point>(currentPoint, p1, p2, p3));
+      currentPoint = p3;
     }
   }
 
@@ -267,7 +283,7 @@ export const getFreedrawShape = <Point extends GlobalPoint | LocalPoint>(
   center: Point,
   isClosed: boolean = false,
 ): GeometricShape<Point> => {
-  const transform = (p: Point) =>
+  const transform = (p: Point): Point =>
     pointRotateRads(
       pointFromVector(
         vectorAdd(vectorFromPoint(p), vector(element.x, element.y)),
@@ -276,21 +292,20 @@ export const getFreedrawShape = <Point extends GlobalPoint | LocalPoint>(
       element.angle,
     );
 
-  const polyline = polylineFromPoints(
-    element.points.map((p) => transform(p as Point)),
-  );
+  const transformedPoints = element.points.map((p) => transform(p as Point));
+  const polyline = polylineFromPoints(transformedPoints);
 
-  return (
-    isClosed
-      ? {
-          type: "polygon",
-          data: polygonFromPoints(polyline.flat()),
-        }
-      : {
-          type: "polyline",
-          data: polyline,
-        }
-  ) as GeometricShape<Point>;
+  if (isClosed) {
+    return {
+      type: "polygon",
+      data: polygonFromPoints(polyline.flat()),
+    };
+  }
+
+  return {
+    type: "polyline",
+    data: polyline,
+  };
 };
 
 export const getClosedCurveShape = <Point extends GlobalPoint | LocalPoint>(

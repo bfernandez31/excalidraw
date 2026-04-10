@@ -1,7 +1,6 @@
 # Implementation Plan: Fix Dead Code Compliance Violations
 
-**Branch**: `EXCAL1-8-copy-of-copy` | **Date**: 2025-05-29 | **Spec**: [spec.md](spec.md)
-**Input**: Feature specification from `/specs/EXCAL1-8-copy-of-copy/spec.md`
+**Branch**: `EXCAL1-8-copy-of-copy` | **Date**: 2025-05-29 | **Spec**: [spec.md](spec.md) **Input**: Feature specification from `/specs/EXCAL1-8-copy-of-copy/spec.md`
 
 ## Summary
 
@@ -9,29 +8,13 @@ Remove unused exported functions `ellipseFocusToCenter` and `ellipseExtremes` fr
 
 ## Technical Context
 
-**Language/Version**: TypeScript 5.9.3
-**Primary Dependencies**: None (code removal only)
-**Storage**: N/A
-**Testing**: Vitest 3.0.6
-**Target Platform**: Web application
-**Project Type**: Monorepo (web application)
-**Performance Goals**: N/A (code removal)
-**Constraints**: Must maintain existing test coverage levels, no breaking changes
-**Scale/Scope**: 2 functions to be removed from 1 file
+**Language/Version**: TypeScript 5.9.3 **Primary Dependencies**: None (code removal only) **Storage**: N/A **Testing**: Vitest 3.0.6 **Target Platform**: Web application **Project Type**: Monorepo (web application) **Performance Goals**: N/A (code removal) **Constraints**: Must maintain existing test coverage levels, no breaking changes **Scale/Scope**: 2 functions to be removed from 1 file
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
-✅ **Type Safety**: Functions are pure TypeScript with proper typing, removal maintains type safety
-✅ **Functional Paradigm**: Functions are pure utilities, removal doesn't affect functional patterns
-✅ **Naming Conventions**: N/A (removal only)
-✅ **Import Discipline**: Functions are not imported anywhere, safe to remove
-✅ **Error Handling**: N/A (removal only)
-✅ **Testing Standards**: All existing tests must pass after removal
-✅ **Security Practices**: N/A (removal only)
-✅ **Code Quality**: Removal improves code quality by eliminating dead code
-✅ **Governance**: Follows commit conventions and CI pipeline requirements
+✅ **Type Safety**: Functions are pure TypeScript with proper typing, removal maintains type safety ✅ **Functional Paradigm**: Functions are pure utilities, removal doesn't affect functional patterns ✅ **Naming Conventions**: N/A (removal only) ✅ **Import Discipline**: Functions are not imported anywhere, safe to remove ✅ **Error Handling**: N/A (removal only) ✅ **Testing Standards**: All existing tests must pass after removal ✅ **Security Practices**: N/A (removal only) ✅ **Code Quality**: Removal improves code quality by eliminating dead code ✅ **Governance**: Follows commit conventions and CI pipeline requirements
 
 ## Project Structure
 
@@ -59,7 +42,7 @@ target/
 
 ## Complexity Tracking
 
-*Fill ONLY if Constitution Check has violations that must be justified*
+_Fill ONLY if Constitution Check has violations that must be justified_
 
 No violations detected. This is a straightforward dead code removal task.
 
@@ -79,14 +62,15 @@ No violations detected. This is a straightforward dead code removal task.
 
 ### Research Findings
 
-**Decision**: Remove `ellipseFocusToCenter` and `ellipseExtremes` functions from `packages/utils/src/shape.ts`
-**Rationale**: 
+**Decision**: Remove `ellipseFocusToCenter` and `ellipseExtremes` functions from `packages/utils/src/shape.ts` **Rationale**:
+
 - Functions are not imported anywhere in the codebase (confirmed by grep search)
 - Functions are exported but unused, violating dead code compliance
 - Removal improves code maintainability and reduces technical debt
 - No tests reference these functions
 
-**Alternatives considered**: 
+**Alternatives considered**:
+
 - Keep functions with deprecation warnings (rejected - adds unnecessary maintenance burden)
 - Move to separate file (rejected - still dead code)
 

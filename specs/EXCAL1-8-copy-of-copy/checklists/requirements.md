@@ -1,8 +1,6 @@
 # Specification Quality Checklist: Fix Dead Code Compliance Violations
 
-**Purpose**: Validate specification completeness and quality before proceeding to planning
-**Created**: 2025-05-29
-**Feature**: [Link to spec.md](spec.md)
+**Purpose**: Validate specification completeness and quality before proceeding to planning **Created**: 2025-05-29 **Feature**: [Link to spec.md](spec.md)
 
 ## Content Quality
 

@@ -27,7 +27,7 @@ Core value propositions include: zero-install browser experience, local-first au
 ## 2. Tech Stack
 
 | Category | Technology | Version | Role |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Language | TypeScript | 5.9.3 | Strict static typing throughout all packages |
 | Framework | React | 19.0.0 | UI rendering for both the library and the web app |
 | State Management | Jotai | 2.11.0 | Atomic state management for editor and app state |
@@ -256,31 +256,37 @@ yarn release:test     # test tag
 From `CLAUDE.md` and observed codebase patterns:
 
 ### Repository Structure
+
 - **Library work** belongs in `packages/*`. All features of the editor core, rendering, element logic, and shared utilities live here.
 - **Application work** belongs in `excalidraw-app/`. App-specific features such as collaboration, Firebase storage, Sentry, and PWA configuration are kept out of the library.
 - **Integration examples** live in `examples/` and must remain lightweight demonstrations.
 
 ### Development Workflow
+
 1. Run `yarn test:update` before every commit to update test snapshots and verify correctness.
 2. Run `yarn test:typecheck` to validate TypeScript — the project uses strict mode throughout.
 3. Run `yarn fix` to auto-correct formatting and linting issues before raising a PR.
 
 ### Package System
+
 - Yarn workspaces manages the monorepo; packages reference each other as workspace siblings.
 - In development (Vite and Vitest), internal `@excalidraw/*` imports resolve to TypeScript source via path aliases defined in `vitest.config.mts` and `excalidraw-app/vite.config.mts`. Published artifacts use compiled ESM output from `dist/`.
 - esbuild is used for library packages; Vite is used only for the app.
 - All packages are strictly typed; no `any` escapes without explicit justification.
 
 ### State Management
+
 - Editor state uses Jotai atoms; the editor store (`editor-jotai.ts`) is scoped independently from the app store (`app-jotai.ts`).
 - App state is the source of truth for active elements, tool selection, viewport, and user settings.
 
 ### Testing
+
 - Tests are co-located with source files (`.test.ts` / `.test.tsx` siblings).
 - Coverage thresholds enforced by Vitest: 60% lines, 70% branches, 63% functions, 60% statements.
 - jsdom is the test environment; canvas is mocked via `vitest-canvas-mock`.
 
 ### Code Style
+
 - Prettier config from `@excalidraw/prettier-config`.
 - ESLint config from `@excalidraw/eslint-config` extended per-package.
 - Husky + lint-staged run checks on pre-commit.
@@ -318,7 +324,7 @@ C4Context
 ## 8. Component Inventory
 
 | Name | Path | Responsibility | Dependencies | Public Surface Area |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | `@excalidraw/excalidraw` | `packages/excalidraw/` | Main React editor component; canvas tools, UI, rendering pipeline, actions, data serialization, i18n | `@excalidraw/element`, `@excalidraw/math`, `@excalidraw/common`, `@excalidraw/utils`, roughjs, perfect-freehand, jotai, pako, pica, radix-ui, CodeMirror 6 | `<Excalidraw>` component, `ExcalidrawAPIProvider`, `useExcalidrawAPI`, `exportToBlob`, `exportToSvg`, `loadFromBlob`, `reconcileElements`, `serializeAsJSON`, TypeScript types |
 | `@excalidraw/element` | `packages/element/` | All element domain logic: creation, mutation, binding, bounds, layout, rendering helpers, text wrapping, elbow arrows, fractional indexing | `@excalidraw/common`, `@excalidraw/math` | Element factory functions (`newElement`, `newTextElement`), mutation (`mutateElement`), bounds, binding, shape helpers, type guards, `ExcalidrawElement` types |
 | `@excalidraw/math` | `packages/math/` | 2D geometry primitives used by element and rendering logic | `@excalidraw/common` | Point, vector, line, segment, curve, ellipse, polygon, rectangle, triangle operations; typed geometry constructors |
@@ -339,7 +345,7 @@ C4Context
 For in-depth coverage of specific domains, see the companion specification documents:
 
 | Document | Description |
-|----------|-------------|
+| --- | --- |
 | [Architecture](architecture.md) | System architecture, components, data flow, dependency graph, architectural decisions |
 | [Data Model](data-model.md) | Entity types, relationships, enums, state machines, data integrity rules |
 | [Endpoints](endpoints.md) | WebSocket events, Firebase operations, HTTP endpoints, public npm API surface |

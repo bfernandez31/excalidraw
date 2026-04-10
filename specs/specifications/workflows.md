@@ -31,12 +31,14 @@
 **CI/CD Platform:** GitHub Actions (all workflows are defined under `.github/workflows/`)
 
 **Deployment Strategy:**
+
 - The primary production web application (excalidraw.com) is deployed via **Vercel**, driven by pushes to the `release` branch. Vercel is configured via `vercel.json`.
 - The **Docker image** (`excalidraw/excalidraw:latest`) is built and published to Docker Hub on every push to the `release` branch via a dedicated publish workflow.
 - The **npm packages** (`@excalidraw/common`, `@excalidraw/math`, `@excalidraw/element`, `@excalidraw/excalidraw`) are released to the npm registry via the `autorelease-excalidraw.yml` workflow, which runs the `yarn release --tag=next` script on pushes to `release`.
 - **Sentry** source map upload and release creation are handled on every `release` branch push.
 
 **Infrastructure Tools:**
+
 - **GitHub Actions** — CI/CD orchestration
 - **Vercel** — Frontend hosting and CDN for the production web application
 - **Docker / Docker Hub** — Container image build and registry for self-hosted deployments
@@ -56,13 +58,14 @@
 ### 2.1 Auto Release Excalidraw Next
 
 | Field | Value |
-|---|---|
+| --- | --- |
 | **Source File** | `.github/workflows/autorelease-excalidraw.yml` |
 | **Trigger** | `push` to branch `release` |
 | **Purpose** | Automatically publishes all `@excalidraw/*` packages to npm under the `next` dist-tag whenever code lands on the `release` branch. |
 | **Runs On** | `ubuntu-latest` |
 
 **Steps Summary:**
+
 1. Checkout repository (depth 2 to allow changelog diffing).
 2. Set up Node.js 20.x.
 3. Configure npm authentication by writing `NPM_TOKEN` to the npm registry config.
@@ -70,6 +73,7 @@
 5. Execute `yarn release --tag=next --non-interactive`, which builds all packages, updates package versions with the commit hash, and publishes to npm.
 
 **Key Secrets:**
+
 - `NPM_TOKEN` — npm publish authentication token.
 
 ---
@@ -77,13 +81,14 @@
 ### 2.2 Build Docker Image
 
 | Field | Value |
-|---|---|
+| --- | --- |
 | **Source File** | `.github/workflows/build-docker.yml` |
 | **Trigger** | `push` to branch `release` |
 | **Purpose** | Validates that the Docker image builds successfully from the `Dockerfile`. Does **not** push the image; use the `publish-docker.yml` workflow for publishing. |
 | **Runs On** | `ubuntu-latest` |
 
 **Steps Summary:**
+
 1. Checkout repository.
 2. Run `docker build -t excalidraw .` to build the image using the root `Dockerfile`.
 
@@ -94,16 +99,18 @@
 ### 2.3 Cancel Previous Runs
 
 | Field | Value |
-|---|---|
+| --- | --- |
 | **Source File** | `.github/workflows/cancel.yml` |
 | **Trigger** | `push` to branch `release`; all `pull_request` events |
 | **Purpose** | Cancels any redundant in-progress workflow runs for the same branch/PR to conserve GitHub Actions minutes and keep the queue clean. |
 | **Runs On** | `ubuntu-latest` |
 
 **Steps Summary:**
+
 1. Use `styfle/cancel-workflow-action@ce177499` to cancel runs for workflow IDs: `400555`, `400556`, `905313`, `1451724`, `1710116`, `3185001`, `3438604` (corresponds to: autorelease, build-docker, sentry, test, lint, size-limit, test-coverage-pr).
 
 **Key Secrets:**
+
 - `GITHUB_TOKEN` — Standard GitHub Actions token for cancelling runs.
 
 ---
@@ -111,13 +118,14 @@
 ### 2.4 Lint
 
 | Field | Value |
-|---|---|
+| --- | --- |
 | **Source File** | `.github/workflows/lint.yml` |
 | **Trigger** | All `pull_request` events |
 | **Purpose** | Enforces code style, formatting, and TypeScript correctness on every PR. Blocks merge if lint or type errors are found. |
 | **Runs On** | `ubuntu-latest` |
 
 **Steps Summary:**
+
 1. Checkout repository.
 2. Set up Node.js 20.x.
 3. Run `yarn install`.
@@ -132,13 +140,14 @@
 ### 2.5 Tests
 
 | Field | Value |
-|---|---|
+| --- | --- |
 | **Source File** | `.github/workflows/test.yml` |
 | **Trigger** | `push` to branch `master` |
 | **Purpose** | Runs the full Vitest test suite against the application on every push to `master` to gate the main branch. |
 | **Runs On** | `ubuntu-latest` |
 
 **Steps Summary:**
+
 1. Checkout repository.
 2. Set up Node.js 20.x.
 3. Run `yarn install`.
@@ -151,7 +160,7 @@
 ### 2.6 Test Coverage PR
 
 | Field | Value |
-|---|---|
+| --- | --- |
 | **Source File** | `.github/workflows/test-coverage-pr.yml` |
 | **Trigger** | All `pull_request` events |
 | **Purpose** | Generates a Vitest code coverage report and posts it as a comment on the PR, giving reviewers visibility into coverage changes introduced by the PR. |
@@ -159,6 +168,7 @@
 | **Permissions** | `contents: read`, `pull-requests: write` |
 
 **Steps Summary:**
+
 1. Checkout repository.
 2. Set up Node.js 20.x.
 3. Run `yarn install`.
@@ -166,6 +176,7 @@
 5. Use `davelosert/vitest-coverage-report-action@2500daf` to post the coverage report as a PR comment (runs even if tests fail via `if: always()`).
 
 **Key Secrets:**
+
 - `GITHUB_TOKEN` — Required to write PR comments.
 
 ---
@@ -173,19 +184,21 @@
 ### 2.7 Bundle Size Check
 
 | Field | Value |
-|---|---|
+| --- | --- |
 | **Source File** | `.github/workflows/size-limit.yml` |
 | **Trigger** | `pull_request` targeting branch `master` |
 | **Purpose** | Measures the ESM bundle size of `@excalidraw/excalidraw` and posts a size comparison comment on the PR, ensuring no unexpected size regressions are introduced. |
 | **Runs On** | `ubuntu-latest` |
 
 **Steps Summary:**
+
 1. Checkout repository.
 2. Set up Node.js 20.x.
 3. Run `yarn` inside `packages/excalidraw` only (scoped install).
 4. Use `andresz1/size-limit-action@e7493a72` with `build_script: build:esm` to measure and report bundle size.
 
 **Key Secrets:**
+
 - `GITHUB_TOKEN` — Required to post the PR size comment.
 
 ---
@@ -193,13 +206,14 @@
 ### 2.8 New Sentry Production Release
 
 | Field | Value |
-|---|---|
+| --- | --- |
 | **Source File** | `.github/workflows/sentry-production.yml` |
 | **Trigger** | `push` to branch `release` |
 | **Purpose** | Creates a new Sentry release, associates commits, uploads JavaScript source maps from the production build, and marks the release as deployed to the `production` environment. |
 | **Runs On** | `ubuntu-latest` |
 
 **Steps Summary:**
+
 1. Checkout repository.
 2. Set up Node.js 20.x.
 3. Run `yarn --frozen-lockfile && yarn build:app` to produce the production build artifacts.
@@ -211,6 +225,7 @@
 9. Finalize the release and mark it as deployed to `production`.
 
 **Key Secrets:**
+
 - `SENTRY_AUTH_TOKEN` — Authentication token for Sentry CLI.
 - `SENTRY_ORG` — Sentry organization slug.
 - `SENTRY_PROJECT` — Sentry project slug.
@@ -220,16 +235,18 @@
 ### 2.9 Semantic PR Title
 
 | Field | Value |
-|---|---|
+| --- | --- |
 | **Source File** | `.github/workflows/semantic-pr-title.yml` |
 | **Trigger** | `pull_request` events: `opened`, `edited`, `synchronize` |
 | **Purpose** | Enforces that PR titles follow the Conventional Commits / semantic format (e.g., `feat:`, `fix:`, `chore:`). Blocks merge on non-conforming titles. |
 | **Runs On** | `ubuntu-latest` |
 
 **Steps Summary:**
+
 1. Use `amannn/action-semantic-pull-request@e32d7e60` to validate the PR title against semantic commit conventions.
 
 **Key Secrets:**
+
 - `GITHUB_TOKEN` — Required for PR API access.
 
 ---
@@ -237,13 +254,14 @@
 ### 2.10 Publish Docker
 
 | Field | Value |
-|---|---|
+| --- | --- |
 | **Source File** | `.github/workflows/publish-docker.yml` |
 | **Trigger** | `push` to branch `release` |
 | **Purpose** | Builds and publishes the official `excalidraw/excalidraw:latest` Docker image to Docker Hub for all supported architectures (amd64, arm64, arm/v7). |
 | **Runs On** | `ubuntu-latest` |
 
 **Steps Summary:**
+
 1. Checkout repository.
 2. Log in to Docker Hub using `docker/login-action@465a0781`.
 3. Set up QEMU with `docker/setup-qemu-action@c7c53464` for cross-platform builds.
@@ -254,6 +272,7 @@
    - Platforms: `linux/amd64`, `linux/arm64`, `linux/arm/v7`.
 
 **Key Secrets:**
+
 - `DOCKER_USERNAME` — Docker Hub account username.
 - `DOCKER_PASSWORD` — Docker Hub account password or access token.
 
@@ -262,13 +281,14 @@
 ### 2.11 Build Locales Coverage
 
 | Field | Value |
-|---|---|
+| --- | --- |
 | **Source File** | `.github/workflows/locales-coverage.yml` |
 | **Trigger** | `push` to branch `l10n_master` (Crowdin integration branch) |
 | **Purpose** | Recalculates translation coverage percentages for all supported locales and auto-commits the updated `percentages.json` file. Also updates the "Update translations from Crowdin" PR description with a formatted coverage table. |
 | **Runs On** | `ubuntu-latest` |
 
 **Steps Summary:**
+
 1. Checkout repository using `PUSH_TRANSLATIONS_COVERAGE_PAT` for write access.
 2. Set up Node.js 20.x.
 3. Run `yarn locales-coverage` to execute `scripts/build-locales-coverage.js`, writing updated `packages/excalidraw/locales/percentages.json`.
@@ -277,6 +297,7 @@
 6. Use `kt3k/update-pr-description@1b35a6dc` to update the Crowdin PR description with the table.
 
 **Key Secrets:**
+
 - `PUSH_TRANSLATIONS_COVERAGE_PAT` — Personal Access Token with repo write access (for push and PR description update).
 
 ---
@@ -392,7 +413,7 @@ graph LR
 ### 4.1 Root package.json Scripts
 
 | Script | Command | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | `start` | `yarn --cwd ./excalidraw-app start` | Start the Vite dev server for the web app |
 | `start:production` | `yarn --cwd ./excalidraw-app start:production` | Build and serve the app locally in production mode |
 | `start:example` | `yarn build:packages && yarn --cwd ./examples/with-script-in-browser start` | Build packages then start the browser script example |
@@ -434,7 +455,7 @@ graph LR
 ### 4.2 excalidraw-app package.json Scripts
 
 | Script | Command | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | `build:app` | `cross-env VITE_APP_GIT_SHA=... vite build` | Production Vite build with git SHA and tracking enabled |
 | `build:app:docker` | `cross-env VITE_APP_DISABLE_SENTRY=true vite build` | Production build with Sentry integration disabled (for Docker images) |
 | `build:version` | `node ../scripts/build-version.js` | Writes `version.json` and patches `index.html` with the build version |
@@ -448,7 +469,9 @@ graph LR
 ### 4.3 Utility Scripts (scripts/)
 
 #### `scripts/release.js`
+
 The main release orchestration script. Handles all release scenarios:
+
 - Parses CLI flags: `--tag=<test|next|latest>`, `--version=<semver>`, `--non-interactive`.
 - In non-interactive mode (used by CI): runs install, builds all packages, updates `package.json` versions across all `@excalidraw/*` packages (using commit hash suffix for `next`/`test`, explicit version for `latest`), then publishes.
 - In interactive mode: prompts to commit version bump (for `latest` releases) and to publish.
@@ -456,12 +479,14 @@ The main release orchestration script. Handles all release scenarios:
 - Packages released in order: `common`, `math`, `element`, `excalidraw`.
 
 #### `scripts/updateChangelog.js`
+
 - Finds the git commit hash of the last release by searching for commits matching `"release @excalidraw/excalidraw"`.
 - Collects all commits since that hash matching conventional types: `feat`, `fix`, `style`, `refactor`, `perf`, `build`.
 - Converts PR references to markdown hyperlinks.
 - Prepends a new version section to `packages/excalidraw/CHANGELOG.md`.
 
 #### `scripts/buildPackage.js`
+
 - esbuild configuration for `@excalidraw/excalidraw` package.
 - Produces two ESM builds: `dist/dev/` (with source maps, unminified) and `dist/prod/` (minified, no source maps).
 - Externals: `@excalidraw/common`, `@excalidraw/element`, `@excalidraw/math`.
@@ -469,18 +494,21 @@ The main release orchestration script. Handles all release scenarios:
 - Supports splitting (code-splitting for chunk files matching `**/*.chunk.ts`).
 
 #### `scripts/buildBase.js`
+
 - esbuild configuration for base packages (e.g., `@excalidraw/common`).
 - All dependencies bundled inside (no `packages: "external"`).
 - Entry point: `src/index.ts`; output format: ESM.
 - Two builds: dev (source maps) and prod (minified).
 
 #### `scripts/buildUtils.js`
+
 - esbuild configuration for utility packages (e.g., `@excalidraw/utils`).
 - Bundles all internal package dependencies using path aliasing.
 - Includes `esbuild-sass-plugin` and a custom `woff2ServerPlugin` for font asset handling.
 - Two builds: dev and prod.
 
 #### `scripts/buildWasm.js`
+
 - Converts WebAssembly modules from `node_modules` into TypeScript source files with base64-encoded binaries.
 - Processes two WASM modules:
   - `fonteditor-core` → `woff2.wasm` → `packages/excalidraw/fonts/wasm/woff2-wasm.ts`
@@ -488,28 +516,33 @@ The main release orchestration script. Handles all release scenarios:
 - Includes license metadata from each package in the generated file header.
 
 #### `scripts/build-version.js`
+
 - Reads `git rev-parse --short HEAD` for the commit hash.
 - Reads `git show -s --format=%ct <hash>` for the commit timestamp.
 - Writes `build/version.json` with the full version string (`<ISO-date>-<hash>`).
 - Patches `build/index.html`, replacing all `{version}` template placeholders with the version string.
 
 #### `scripts/build-node.js`
+
 - Rewires the CRA webpack config to produce a Node.js-targeted bundle.
 - Disables code splitting, sets a deterministic output filename `static/js/build-node.js`.
 - Entry point: `packages/excalidraw/index-node`.
 - Required for server-side rendering or CLI usage of the Excalidraw component (requires `canvas` native module).
 
 #### `scripts/buildDocs.js`
+
 - Inspects the diff between the previous commit and `HEAD` (`git diff --name-only HEAD^ HEAD`).
 - Exits with code 0 (skip docs build) if no files under `docs/` were changed.
 - Exits with code 1 (trigger docs build) if doc files were modified.
 
 #### `scripts/build-locales-coverage.js`
+
 - Reads all locale JSON files from `packages/excalidraw/locales/`.
 - Flattens each locale's nested key structure and counts translated (non-empty) keys.
 - Computes a percentage per locale and writes the results to `packages/excalidraw/locales/percentages.json`.
 
 #### `scripts/locales-coverage-description.js`
+
 - Reads `packages/excalidraw/locales/percentages.json`.
 - Prints a formatted markdown table (stdout) with flag, language name, Crowdin link, and coverage percentage.
 - Languages at or above 85% threshold are bolded.
@@ -525,11 +558,12 @@ The main release orchestration script. Handles all release scenarios:
 The Dockerfile uses a **multi-stage build**:
 
 | Stage | Base Image | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | `build` | `node:18` (pinned to `--platform=${BUILDPLATFORM}`) | Install dependencies and build the Vite app |
 | Final | `nginx:1.27-alpine` (pinned to `--platform=${TARGETPLATFORM}`) | Serve the static build with Nginx |
 
 **Build Stage Details:**
+
 - Working directory: `/opt/node_app`
 - Mounts a Yarn cache (`/root/.cache/yarn`) to accelerate repeated builds.
 - Passes `npm_config_target_arch=${TARGETARCH}` to handle native module compilation for cross-platform builds.
@@ -537,6 +571,7 @@ The Dockerfile uses a **multi-stage build**:
 - `NODE_ENV` defaults to `production` via `ARG NODE_ENV=production`.
 
 **Final Stage Details:**
+
 - Copies `excalidraw-app/build` to `/usr/share/nginx/html`.
 - Health check: `wget -q -O /dev/null http://localhost || exit 1`.
 
@@ -546,16 +581,17 @@ The Dockerfile uses a **multi-stage build**:
 
 Used for local development with Docker:
 
-| Setting | Value |
-|---|---|
-| Service name | `excalidraw` |
-| Build args | `NODE_ENV=development` |
-| Port mapping | `3000:80` (host:container) |
-| Restart policy | `on-failure` |
-| Healthcheck | Disabled in dev |
-| `NODE_ENV` env | `development` |
+| Setting        | Value                      |
+| -------------- | -------------------------- |
+| Service name   | `excalidraw`               |
+| Build args     | `NODE_ENV=development`     |
+| Port mapping   | `3000:80` (host:container) |
+| Restart policy | `on-failure`               |
+| Healthcheck    | Disabled in dev            |
+| `NODE_ENV` env | `development`              |
 
 **Volume mounts (delegated):**
+
 - `./` → `/opt/node_app/app` — live source code
 - `./package.json` → `/opt/node_app/package.json`
 - `./yarn.lock` → `/opt/node_app/yarn.lock`
@@ -565,26 +601,30 @@ Used for local development with Docker:
 
 **Location:** `/vercel.json`
 
-| Setting | Value |
-|---|---|
+| Setting          | Value                  |
+| ---------------- | ---------------------- |
 | Output directory | `excalidraw-app/build` |
-| Install command | `yarn install` |
-| Visibility | `public: true` |
+| Install command  | `yarn install`         |
+| Visibility       | `public: true`         |
 
 **HTTP Headers applied to all routes (`/(.*)`)**:
+
 - `Access-Control-Allow-Origin: https://excalidraw.com`
 - `X-Content-Type-Options: nosniff`
 - `Feature-Policy: *`
 - `Referrer-Policy: origin`
 
 **Font caching headers (`/:file*.woff2`):**
+
 - `Cache-Control: public, max-age=31536000` (1 year)
 - `Access-Control-Allow-Origin: https://excalidraw.com`
 
 **Wildcard font origins (`/(Virgil|Cascadia|Assistant-Regular).woff2`):**
+
 - `Access-Control-Allow-Origin: *` (public fonts, open access)
 
 **Redirects:**
+
 - `/webex/*` → `https://for-webex.excalidraw.com`
 - `vscode.excalidraw.com/*` → VS Code Marketplace extension page
 
@@ -642,17 +682,17 @@ graph LR
 ### Environment Files
 
 | File | Scope | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | `.env.development` | Local dev / CI | Vite environment variables for development mode |
 | `.env.production` | Production builds | Vite environment variables for production mode |
 | `.env.local` (gitignored) | Developer override | Local overrides, should not be committed |
 
 ### Environment Variables
 
-#### Application (VITE_APP_* — exposed to browser via Vite)
+#### Application (VITE*APP*\* — exposed to browser via Vite)
 
 | Variable | Dev Value | Prod Value | Purpose |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `VITE_APP_BACKEND_V2_GET_URL` | `https://json-dev.excalidraw.com/api/v2/` | `https://json.excalidraw.com/api/v2/` | URL for fetching saved scenes |
 | `VITE_APP_BACKEND_V2_POST_URL` | `https://json-dev.excalidraw.com/api/v2/post/` | `https://json.excalidraw.com/api/v2/post/` | URL for saving scenes |
 | `VITE_APP_LIBRARY_URL` | `https://libraries.excalidraw.com` | `https://libraries.excalidraw.com` | Public library browsing URL |
@@ -678,7 +718,7 @@ graph LR
 #### GitHub Actions Secrets
 
 | Secret | Used By Workflow | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | `NPM_TOKEN` | `autorelease-excalidraw.yml` | Authenticate `yarn publish` to npmjs.org |
 | `GITHUB_TOKEN` | `cancel.yml`, `test-coverage-pr.yml`, `size-limit.yml`, `semantic-pr-title.yml` | Standard GitHub Actions token (auto-provisioned) |
 | `SENTRY_AUTH_TOKEN` | `sentry-production.yml` | Authenticate Sentry CLI for release and source map operations |
@@ -691,7 +731,7 @@ graph LR
 #### Build-Time / CI Variables
 
 | Variable | Set By | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | `CI` | GitHub Actions (auto) | Signals CI environment; affects Vite and some build scripts |
 | `CI_JOB_NUMBER` | `size-limit.yml` (hardcoded `1`) | Required by size-limit action for parallelism tracking |
 | `NODE_ENV` | `Dockerfile` (`ARG`) | Controls build optimizations; defaults to `production` in Docker |

@@ -5,10 +5,9 @@
 **Status**: Draft  
 **Input**: User description: Health scan found 2 compliance violations for principle "Dead Code":
 
-packages/utils/src/shape.ts:507: Exported function 'ellipseFocusToCenter' is not imported anywhere in the codebase and file was last modified over 30 days ago (2025-05-09)
-packages/utils/src/shape.ts:515: Exported function 'ellipseExtremes' is not imported anywhere in the codebase and file was last modified over 30 days ago (2025-05-09)
+packages/utils/src/shape.ts:507: Exported function 'ellipseFocusToCenter' is not imported anywhere in the codebase and file was last modified over 30 days ago (2025-05-09) packages/utils/src/shape.ts:515: Exported function 'ellipseExtremes' is not imported anywhere in the codebase and file was last modified over 30 days ago (2025-05-09)
 
-## Auto-Resolved Decisions *(mandatory when clarification policies apply)*
+## Auto-Resolved Decisions _(mandatory when clarification policies apply)_
 
 - **Decision**: Remove unused exported functions from codebase
 - **Policy Applied**: CONSERVATIVE (AUTO fallback due to compliance context)
@@ -19,7 +18,7 @@ packages/utils/src/shape.ts:515: Exported function 'ellipseExtremes' is not impo
   2. Conservative approach ensures no accidental breaking changes
 - **Reviewer Notes**: Verify functions are truly unused before deletion; check for dynamic imports or reflection usage
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Remove Unused Functions (Priority: P1)
 
@@ -40,7 +39,7 @@ As a developer maintaining code quality, I want to remove unused exported functi
 - What happens if functions are used via dynamic imports or reflection?
 - How does system handle partial usage (functions used in tests but not production)?
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -55,7 +54,7 @@ As a developer maintaining code quality, I want to remove unused exported functi
 - **Unused Functions**: ellipseFocusToCenter, ellipseExtremes (functions to be removed)
 - **Source File**: packages/utils/src/shape.ts (file containing dead code)
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 
