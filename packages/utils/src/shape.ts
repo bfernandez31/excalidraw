@@ -101,6 +101,7 @@ export type GeometricShape<Point extends GlobalPoint | LocalPoint> =
       type: "polycurve";
       data: Polycurve<Point>;
     };
+
 type RectangularElement =
   | ExcalidrawRectangleElement
   | ExcalidrawDiamondElement
@@ -163,7 +164,6 @@ export const getSelectionBoxShape = <Point extends GlobalPoint | LocalPoint>(
   y1 -= padding;
   y2 += padding;
 
-  //const angleInDegrees = angleToDegrees(element.angle);
   const center = pointFrom(cx, cy);
   const topLeft = pointRotateRads(pointFrom(x1, y1), center, element.angle);
   const topRight = pointRotateRads(pointFrom(x2, y1), center, element.angle);
