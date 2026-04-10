@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-04-10T22:02:46Z",
+  "sourceTicket": "EXCAL1-8",
+  "tickets": {
+    "EXCAL1-8": {
+      "ticketKey": "EXCAL1-8",
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "cacheReadTokens": 0,
+      "cacheCreationTokens": 0,
+      "costUsd": 0,
+      "durationMs": 3143738,
+      "model": null,
+      "toolsUsed": [],
+      "jobCount": 4,
+      "hasData": false
+    },
+    "EXCAL1-5": {
+      "ticketKey": "EXCAL1-5",
+      "inputTokens": 6489,
+      "outputTokens": 96340,
+      "cacheReadTokens": 9144714,
+      "cacheCreationTokens": 519366,
+      "costUsd": 6.8401518,
+      "durationMs": 1678723,
+      "model": "claude-opus-4-6",
+      "toolsUsed": [
+        "Agent",
+        "Bash",
+        "Edit",
+        "Glob",
+        "Grep",
+        "Read",
+        "TodoWrite",
+        "ToolSearch",
+        "Write"
+      ],
+      "jobCount": 5,
+      "hasData": true
+    }
+  }
+}
