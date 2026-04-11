@@ -872,8 +872,8 @@ class App extends React.Component<AppProps, AppState> {
     let data = null;
     try {
       data = JSON.parse(event.data);
-    } catch (e) {
-      console.error("Failed to parse JSON from postMessage event:", e);
+    } catch (error) {
+      console.error("Failed to parse JSON from postMessage event:", error);
       return;
     }
     if (!data) {
