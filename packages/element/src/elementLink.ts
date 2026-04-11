@@ -98,7 +98,9 @@ export const parseElementLinkFromURL = (url: string) => {
       const id = searchParams.get(ELEMENT_LINK_KEY);
       return id;
     }
-  } catch {}
+  } catch (e) {
+    console.warn("Failed to parse element link URL", e);
+  }
 
   return null;
 };

@@ -548,7 +548,9 @@ export const parseClipboard = async (
         programmaticAPI,
       };
     }
-  } catch {}
+  } catch (e) {
+    console.warn("Failed to parse clipboard data as Excalidraw JSON", e);
+  }
 
   return { text: parsedEventData.value };
 };
