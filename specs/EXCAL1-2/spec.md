@@ -25,6 +25,7 @@ As a developer debugging issues, I want errors to be logged so I can identify an
 **Independent Test**: Verify that errors are logged to console.error in all previously empty catch blocks.
 
 **Acceptance Scenarios**:
+
 1. **Given** a JSON parse error in postMessage event, **When** caught, **Then** error is logged to console.error
 2. **Given** a clipboard JSON parse error, **When** caught, **Then** error is logged to console.error
 3. **Given** a clipboard copy error, **When** caught, **Then** error is logged to console.error
@@ -40,6 +41,7 @@ As a user of Excalidraw, I want the application to continue working normally aft
 **Independent Test**: Run full test suite and verify all tests pass.
 
 **Acceptance Scenarios**:
+
 1. **Given** error handling improvements, **When** running tests, **Then** all existing tests pass
 2. **Given** error handling improvements, **When** using clipboard features, **Then** behavior is unchanged except for error logging
 
