@@ -1,0 +1,92 @@
+{
+  "generatedAt": "2026-04-11T18:37:23Z",
+  "sourceTicket": "EXCAL1-2",
+  "tickets": {
+    "EXCAL1-2": {
+      "ticketKey": "EXCAL1-2",
+      "inputTokens": 5557,
+      "outputTokens": 49592,
+      "cacheReadTokens": 5077420,
+      "cacheCreationTokens": 344223,
+      "costUsd": 2.74007975,
+      "durationMs": 2041228,
+      "model": "claude-sonnet-4-6",
+      "toolsUsed": [
+        "Agent",
+        "Bash",
+        "Grep",
+        "Read",
+        "TodoWrite",
+        "ToolSearch"
+      ],
+      "jobCount": 4,
+      "hasData": true
+    },
+    "EXCAL1-10": {
+      "ticketKey": "EXCAL1-10",
+      "inputTokens": 2656,
+      "outputTokens": 20136,
+      "cacheReadTokens": 1723391,
+      "cacheCreationTokens": 113610,
+      "costUsd": 1.6043879,
+      "durationMs": 330496,
+      "model": "claude-opus-4-6",
+      "toolsUsed": [
+        "Agent",
+        "Bash",
+        "Edit",
+        "Glob",
+        "Grep",
+        "Read",
+        "TodoWrite",
+        "ToolSearch"
+      ],
+      "jobCount": 2,
+      "hasData": true
+    },
+    "EXCAL1-11": {
+      "ticketKey": "EXCAL1-11",
+      "inputTokens": 141672,
+      "outputTokens": 27476,
+      "cacheReadTokens": 2392055,
+      "cacheCreationTokens": 47788,
+      "costUsd": 1.7674145,
+      "durationMs": 619239,
+      "model": "gpt-5.4",
+      "toolsUsed": [
+        "Agent",
+        "Bash",
+        "TodoWrite",
+        "ToolSearch",
+        "WebFetch",
+        "Write",
+        "apply_patch",
+        "exec_command",
+        "update_plan",
+        "write_stdin"
+      ],
+      "jobCount": 3,
+      "hasData": true
+    },
+    "EXCAL1-9": {
+      "ticketKey": "EXCAL1-9",
+      "inputTokens": 2747,
+      "outputTokens": 34907,
+      "cacheReadTokens": 2564348,
+      "cacheCreationTokens": 185258,
+      "costUsd": 1.5969311,
+      "durationMs": 781279,
+      "model": "claude-sonnet-4-6",
+      "toolsUsed": [
+        "Agent",
+        "Bash",
+        "Grep",
+        "Read",
+        "TodoWrite",
+        "ToolSearch"
+      ],
+      "jobCount": 2,
+      "hasData": true
+    }
+  }
+}
