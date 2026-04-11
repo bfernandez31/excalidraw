@@ -66,7 +66,9 @@ const CustomStats = (props: Props) => {
           try {
             await copyTextToSystemClipboard(getVersion());
             props.setToast(t("toast.copyToClipboard"));
-          } catch {}
+          } catch (e) {
+            console.error("Failed to copy version to clipboard:", e);
+          }
         }}
         title={t("stats.versionCopy")}
       >

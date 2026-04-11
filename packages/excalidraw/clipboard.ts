@@ -548,7 +548,9 @@ export const parseClipboard = async (
         programmaticAPI,
       };
     }
-  } catch {}
+  } catch (e) {
+    console.error("Failed to parse clipboard data:", e);
+  }
 
   return { text: parsedEventData.value };
 };
