@@ -4722,13 +4722,15 @@ class App extends React.Component<AppProps, AppState> {
               // fix for Proxies hijacking `this`
               return value.bind(ev);
             }
-            return prop === "key"
-              ? // CapsLock inverts capitalization based on ShiftKey, so invert
-                // it back
-                event.shiftKey
+            if (prop === "key") {
+              // CapsLock inverts capitalization based on ShiftKey, so invert
+              // it back
+              return event.shiftKey
                 ? ev.key.toUpperCase()
-                : ev.key.toLowerCase()
-              : value;
+                : ev.key.toLowerCase();
+            }
+
+            return value;
           },
         });
       }
