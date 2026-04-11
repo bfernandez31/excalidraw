@@ -1,20 +1,15 @@
 import React from "react";
 
 const getMenuComponent = (component: string) => (children: React.ReactNode) => {
-  const comp = React.Children.toArray(children).find(
-    (child) =>
-      React.isValidElement(child) &&
-      typeof child.type !== "string" &&
-      //@ts-ignore
-      child?.type.displayName &&
-      //@ts-ignore
-      child.type.displayName === component,
+  return (
+    React.Children.toArray(children).find(
+      (child) =>
+        React.isValidElement(child) &&
+        typeof child.type !== "string" &&
+        "displayName" in child.type &&
+        child.type.displayName === component,
+    ) ?? null
   );
-  if (!comp) {
-    return null;
-  }
-  //@ts-ignore
-  return comp;
 };
 
 export const getMenuTriggerComponent = getMenuComponent("DropdownMenuTrigger");

@@ -1,4 +1,5 @@
-import { invariant, isTransparent, type Bounds } from "@excalidraw/common";
+import { invariant, isTransparent } from "@excalidraw/common";
+
 import {
   curveIntersectLineSegment,
   isPointWithinBounds,
@@ -17,6 +18,8 @@ import {
   ellipse,
   ellipseSegmentInterceptPoints,
 } from "@excalidraw/math/ellipse";
+
+import type { Bounds } from "@excalidraw/common";
 
 import type {
   Curve,

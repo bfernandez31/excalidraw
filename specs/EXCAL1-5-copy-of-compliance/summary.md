@@ -1,7 +1,6 @@
 # Implementation Summary: Remove Dead Code — Unused Ellipse Utility Functions
 
-**Branch**: `EXCAL1-5-copy-of-compliance` | **Date**: 2026-04-10
-**Spec**: [spec.md](spec.md)
+**Branch**: `EXCAL1-5-copy-of-compliance` | **Date**: 2026-04-10 **Spec**: [spec.md](spec.md)
 
 ## Changes Summary
 
