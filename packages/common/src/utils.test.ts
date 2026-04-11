@@ -11,6 +11,21 @@ import { throttleRAF } from "./utils";
 type RafCallback = FrameRequestCallback;
 
 describe("@excalidraw/common/utils", () => {
+  describe("getFeatureFlag()", () => {
+    it("should log and fall back to defaults when stored flags are malformed", async () => {
+      vi.resetModules();
+      localStorage.setItem("excalidraw-feature-flags", "{invalid");
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+      const { getFeatureFlag } = await import("./utils");
+
+      expect(getFeatureFlag("COMPLEX_BINDINGS")).toBe(false);
+      expect(errorSpy).toHaveBeenCalledTimes(1);
+
+      localStorage.removeItem("excalidraw-feature-flags");
+    });
+  });
+
   describe("isTransparent()", () => {
     it("should return true when color is rgb transparent", () => {
       expect(isTransparent("#ff00")).toEqual(true);

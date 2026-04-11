@@ -1299,7 +1299,10 @@ export const getFeatureFlag = <F extends keyof FEATURE_FLAGS>(
         const flags = JSON.parse(serializedFlags);
         featureFlags = flags ?? DEFAULT_FEATURE_FLAGS;
       }
-    } catch {}
+    } catch (error) {
+      console.error("unable to parse feature flags", error);
+      featureFlags = DEFAULT_FEATURE_FLAGS;
+    }
   }
 
   return (featureFlags || DEFAULT_FEATURE_FLAGS)[flag];
