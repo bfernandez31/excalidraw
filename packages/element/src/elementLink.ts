@@ -94,10 +94,7 @@ export const isElementLink = (url: string) => {
 export const parseElementLinkFromURL = (url: string) => {
   try {
     const { searchParams } = new URL(url);
-    if (searchParams.has(ELEMENT_LINK_KEY)) {
-      const id = searchParams.get(ELEMENT_LINK_KEY);
-      return id;
-    }
+    return searchParams.get(ELEMENT_LINK_KEY);
   } catch (e) {
     console.warn("Failed to parse element link URL", e);
   }
