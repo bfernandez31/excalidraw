@@ -1293,6 +1293,8 @@ export const getFeatureFlag = <F extends keyof FEATURE_FLAGS>(
   flag: F,
 ): FEATURE_FLAGS[F] => {
   if (!featureFlags) {
+    featureFlags = DEFAULT_FEATURE_FLAGS;
+
     try {
       const serializedFlags = localStorage.getItem(FEATURE_FLAGS_STORAGE_KEY);
       if (serializedFlags) {
@@ -1301,11 +1303,10 @@ export const getFeatureFlag = <F extends keyof FEATURE_FLAGS>(
       }
     } catch (error) {
       console.error("unable to parse feature flags", error);
-      featureFlags = DEFAULT_FEATURE_FLAGS;
     }
   }
 
-  return (featureFlags || DEFAULT_FEATURE_FLAGS)[flag];
+  return featureFlags[flag];
 };
 
 export const setFeatureFlag = <F extends keyof FEATURE_FLAGS>(

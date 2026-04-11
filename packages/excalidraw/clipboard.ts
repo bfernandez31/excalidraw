@@ -554,7 +554,7 @@ export const parseClipboard = async (
       };
     }
   } catch {
-    return { text: parsedEventData.value };
+    // Treat invalid JSON clipboard contents as plain text.
   }
 
   return { text: parsedEventData.value };
