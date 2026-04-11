@@ -1,3 +1,5 @@
+import { vi } from "vitest";
+
 import {
   createPasteEvent,
   parseClipboard,
@@ -55,6 +57,25 @@ describe("parseClipboard()", () => {
       ),
     );
     expect(clipboardData.elements).toEqual([rect]);
+  });
+
+  it("should return malformed object-like clipboard payloads as text without logging", async () => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    const clipboardData = await parseClipboard(
+      await parseDataTransferEvent(
+        createPasteEvent({
+          types: {
+            "text/plain": '{"type":"excalidraw/clipboard"',
+          },
+        }),
+      ),
+    );
+
+    expect(clipboardData).toEqual({
+      text: '{"type":"excalidraw/clipboard"',
+    });
+    expect(errorSpy).not.toHaveBeenCalled();
   });
 
   it("should parse valid excalidraw JSON if inside text/html", async () => {

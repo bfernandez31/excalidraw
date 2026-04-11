@@ -534,8 +534,13 @@ export const parseClipboard = async (
     };
   }
 
+  const serializedClipboardData = parsedEventData.value.trimStart();
+  if (!serializedClipboardData.startsWith("{")) {
+    return { text: parsedEventData.value };
+  }
+
   try {
-    const systemClipboardData = JSON.parse(parsedEventData.value);
+    const systemClipboardData = JSON.parse(serializedClipboardData);
     const programmaticAPI =
       systemClipboardData.type === EXPORT_DATA_TYPES.excalidrawClipboardWithAPI;
     if (clipboardContainsElements(systemClipboardData)) {
@@ -548,7 +553,9 @@ export const parseClipboard = async (
         programmaticAPI,
       };
     }
-  } catch {}
+  } catch {
+    // Treat invalid JSON clipboard contents as plain text.
+  }
 
   return { text: parsedEventData.value };
 };

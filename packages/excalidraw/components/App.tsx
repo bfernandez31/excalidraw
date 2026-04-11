@@ -869,10 +869,17 @@ class App extends React.Component<AppProps, AppState> {
       return;
     }
 
-    let data = null;
-    try {
-      data = JSON.parse(event.data);
-    } catch (e) {}
+    let data: any = null;
+    if (typeof event.data === "string") {
+      try {
+        data = JSON.parse(event.data);
+      } catch (error) {
+        console.error("Failed to parse embeddable window message", error);
+        return;
+      }
+    } else if (typeof event.data === "object" && event.data) {
+      data = event.data;
+    }
     if (!data) {
       return;
     }

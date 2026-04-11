@@ -43,4 +43,19 @@ describe("Test <App/>", () => {
       ),
     ).toMatchSnapshot();
   });
+
+  it("should log malformed embeddable window messages instead of swallowing them", async () => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    await render(<Excalidraw />);
+
+    window.dispatchEvent(
+      new MessageEvent("message", {
+        origin: "https://www.youtube.com",
+        data: '{"event":"infoDelivery"',
+      }),
+    );
+
+    expect(errorSpy).toHaveBeenCalledTimes(1);
+  });
 });
