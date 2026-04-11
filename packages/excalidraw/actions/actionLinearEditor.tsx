@@ -2,13 +2,11 @@ import {
   isElbowArrow,
   isLinearElement,
   isLineElement,
-} from "@excalidraw/element";
-import { arrayToMap, invariant } from "@excalidraw/common";
-
-import {
+  newElementWith,
   toggleLinePolygonState,
   CaptureUpdateAction,
 } from "@excalidraw/element";
+import { arrayToMap, invariant } from "@excalidraw/common";
 
 import type {
   ExcalidrawLinearElement,
@@ -21,8 +19,6 @@ import { lineEditorIcon, polygonIcon } from "../components/icons";
 import { t } from "../i18n";
 
 import { ButtonIcon } from "../components/ButtonIcon";
-
-import { newElementWith } from "../../element/src/mutateElement";
 
 import { register } from "./register";
 
