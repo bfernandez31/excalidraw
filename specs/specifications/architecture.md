@@ -361,6 +361,7 @@ All data written to Firebase and broadcast over WebSockets is encrypted client-s
 - **ActionManager** (`packages/excalidraw/actions/manager.tsx`): Wraps `trackEvent` in try/catch to prevent analytics errors from bubbling.
 - **`AbortError`** (`packages/excalidraw/errors.ts`): Custom error class used by async data operations (library load, blob load) to differentiate user-initiated cancellation from real errors.
 - **`ErrorDialog`** component: Displayed in-canvas for user-visible errors (e.g. Firebase load failures).
+- **Non-fatal parse failures**: Recoverable parse errors in try/catch blocks emit `console.warn` (or `console.error` for user-initiated operations) rather than being silently swallowed. Affected sites: clipboard JSON parse (`packages/excalidraw/clipboard.ts`), element link URL parse (`packages/element/src/elementLink.ts`), feature flag localStorage parse (`packages/common/src/utils.ts`), postMessage event data parse (`packages/excalidraw/components/App.tsx`), and version clipboard copy (`excalidraw-app/CustomStats.tsx`). Because Sentry captures `console.error`, clipboard copy failures are automatically reported to error monitoring in production.
 
 ### Logging / Analytics
 
