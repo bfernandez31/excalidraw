@@ -7,7 +7,7 @@ import {
   nFormatter,
 } from "@excalidraw/common";
 import { t } from "@excalidraw/excalidraw/i18n";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 import type { NonDeletedExcalidrawElement } from "@excalidraw/element/types";
 import type { UIAppState } from "@excalidraw/excalidraw/types";
@@ -47,34 +47,38 @@ const CustomStats = (props: Props) => {
   useEffect(() => () => getStorageSizes.cancel(), []);
 
   const version = getVersion();
-  let hash;
-  let timestamp;
+  const { timestamp, hash } = useMemo(() => {
+    if (version !== DEFAULT_VERSION) {
+      return {
+        timestamp: version.slice(0, 16).replace("T", " "),
+        hash: version.slice(21),
+      };
+    }
+    return {
+      timestamp: t("stats.versionNotAvailable"),
+      hash: null,
+    };
+  }, [version]);
 
-  if (version !== DEFAULT_VERSION) {
-    timestamp = version.slice(0, 16).replace("T", " ");
-    hash = version.slice(21);
-  } else {
-    timestamp = t("stats.versionNotAvailable");
-  }
+  const handleVersionCopy = async () => {
+    try {
+      await copyTextToSystemClipboard(getVersion());
+      props.setToast(t("toast.copyToClipboard"));
+    } catch (e) {
+      console.error("Failed to copy version to clipboard:", e);
+    }
+  };
 
   return (
     <Stats.StatsRows order={-1}>
       <Stats.StatsRow heading>{t("stats.version")}</Stats.StatsRow>
       <Stats.StatsRow
         style={{ textAlign: "center", cursor: "pointer" }}
-        onClick={async () => {
-          try {
-            await copyTextToSystemClipboard(getVersion());
-            props.setToast(t("toast.copyToClipboard"));
-          } catch (e) {
-            console.error(e);
-          }
-        }}
+        onClick={handleVersionCopy}
         title={t("stats.versionCopy")}
       >
         {timestamp}
-        <br />
-        {hash}
+        {hash && <><br />{hash}</>}
       </Stats.StatsRow>
 
       <Stats.StatsRow heading>{t("stats.storage")}</Stats.StatsRow>

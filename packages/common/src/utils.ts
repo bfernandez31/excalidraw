@@ -280,43 +280,50 @@ export const easeToValuesRAF = <
     }
 
     const elapsed = Math.min(timestamp - startTime, duration);
-    const factor = easeOut(elapsed / duration);
+    const progress = elapsed / duration;
+    const factor = easeOut(progress);
 
-    const newValues = {} as T;
+    // Create interpolated values
+    const interpolatedValues = {} as T;
+    let hasCustomInterpolation = false;
 
-    Object.keys(fromValues).forEach((key) => {
+    for (const key in fromValues) {
       const _key = key as keyof T;
-      const result = ((toValues[_key] - fromValues[_key]) * factor +
-        fromValues[_key]) as T[keyof T];
-      newValues[_key] = result;
-    });
+      const startValue = fromValues[_key];
+      const endValue = toValues[_key];
 
-    onStep(newValues);
-
-    if (elapsed < duration) {
-      const progress = elapsed / duration;
-
-      const newValues = {} as T;
-
-      Object.keys(fromValues).forEach((key) => {
-        const _key = key as K;
-        const startValue = fromValues[_key];
-        const endValue = toValues[_key];
-
-        let result;
-
-        result = interpolateValue
-          ? interpolateValue(startValue, endValue, progress, _key)
-          : easeOutInterpolate(startValue, endValue, progress);
-
-        if (result == null) {
+      let result: number;
+      
+      if (interpolateValue) {
+        const customResult = interpolateValue(
+          startValue, 
+          endValue, 
+          progress, 
+          _key as K
+        );
+        if (customResult !== undefined) {
+          result = customResult;
+          hasCustomInterpolation = true;
+        } else {
           result = easeOutInterpolate(startValue, endValue, progress);
         }
+      } else {
+        result = easeOutInterpolate(startValue, endValue, progress);
+      }
 
-        newValues[_key] = result as T[K];
-      });
-      onStep(newValues);
+      interpolatedValues[_key] = result;
+    }
 
+    onStep(hasCustomInterpolation && elapsed < duration ? interpolatedValues : {
+      ...fromValues,
+      ...Object.keys(fromValues).reduce((acc, key) => {
+        const _key = key as keyof T;
+        acc[_key] = ((toValues[_key] - fromValues[_key]) * factor + fromValues[_key]) as T[keyof T];
+        return acc;
+      }, {} as T)
+    });
+
+    if (elapsed < duration) {
       frameId = window.requestAnimationFrame(step);
     } else {
       onStep(toValues);
@@ -972,17 +979,12 @@ export const memoize = <T extends Record<string, any>, R extends any>(
   const ret = function (opts: T) {
     const currentArgs = Object.entries(opts);
 
-    if (lastArgs) {
-      let argsAreEqual = true;
-      for (const [key, value] of currentArgs) {
-        if (lastArgs.get(key) !== value) {
-          argsAreEqual = false;
-          break;
-        }
-      }
-      if (argsAreEqual) {
-        return lastResult;
-      }
+    // Check if arguments are the same as last call
+    const argsAreEqual = lastArgs?.size === currentArgs.length &&
+      currentArgs.every(([key, value]) => lastArgs?.get(key) === value);
+
+    if (argsAreEqual && lastResult !== undefined) {
+      return lastResult;
     }
 
     const result = func(opts);

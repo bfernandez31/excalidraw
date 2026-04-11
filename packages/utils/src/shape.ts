@@ -120,30 +120,29 @@ export const getPolygonShape = <Point extends GlobalPoint | LocalPoint>(
 
   const cx = x + width / 2;
   const cy = y + height / 2;
-
   const center: Point = pointFrom(cx, cy);
 
-  let data: Polygon<Point>;
+  const isDiamond = element.type === "diamond";
+  
+  const points = isDiamond
+    ? [
+        pointFrom(cx, y),
+        pointFrom(x + width, cy),
+        pointFrom(cx, y + height),
+        pointFrom(x, cy),
+      ]
+    : [
+        pointFrom(x, y),
+        pointFrom(x + width, y),
+        pointFrom(x + width, y + height),
+        pointFrom(x, y + height),
+      ];
 
-  if (element.type === "diamond") {
-    data = polygon(
-      pointRotateRads(pointFrom(cx, y), center, angle),
-      pointRotateRads(pointFrom(x + width, cy), center, angle),
-      pointRotateRads(pointFrom(cx, y + height), center, angle),
-      pointRotateRads(pointFrom(x, cy), center, angle),
-    );
-  } else {
-    data = polygon(
-      pointRotateRads(pointFrom(x, y), center, angle),
-      pointRotateRads(pointFrom(x + width, y), center, angle),
-      pointRotateRads(pointFrom(x + width, y + height), center, angle),
-      pointRotateRads(pointFrom(x, y + height), center, angle),
-    );
-  }
+  const rotatedPoints = points.map((point) => pointRotateRads(point, center, angle));
 
   return {
     type: "polygon",
-    data,
+    data: polygon(...rotatedPoints),
   };
 };
 
@@ -414,6 +413,8 @@ const distanceToEllipse = <Point extends LocalPoint | GlobalPoint>(
   const { angle, halfWidth, halfHeight, center } = ellipse;
   const a = halfWidth;
   const b = halfHeight;
+  
+  // Transform point to ellipse coordinate system
   const translatedPoint = vectorAdd(
     vectorFromPoint(p),
     vectorScale(vectorFromPoint(center), -1),
@@ -427,6 +428,7 @@ const distanceToEllipse = <Point extends LocalPoint | GlobalPoint>(
   const px = Math.abs(rotatedPointX);
   const py = Math.abs(rotatedPointY);
 
+  // Approximate distance using iterative method
   let tx = 0.707;
   let ty = 0.707;
 
@@ -448,19 +450,20 @@ const distanceToEllipse = <Point extends LocalPoint | GlobalPoint>(
 
     tx = Math.min(1, Math.max(0, ((qx * r) / q + ex) / a));
     ty = Math.min(1, Math.max(0, ((qy * r) / q + ey) / b));
+    
+    // Normalize the vector
     const t = Math.hypot(ty, tx);
     tx /= t;
     ty /= t;
   }
 
-  const [minX, minY] = [
-    a * tx * Math.sign(rotatedPointX),
-    b * ty * Math.sign(rotatedPointY),
-  ];
+  // Calculate closest point on ellipse and return distance
+  const closestX = a * tx * Math.sign(rotatedPointX);
+  const closestY = b * ty * Math.sign(rotatedPointY);
 
   return pointDistance(
     pointFrom(rotatedPointX, rotatedPointY),
-    pointFrom(minX, minY),
+    pointFrom(closestX, closestY),
   );
 };
 
