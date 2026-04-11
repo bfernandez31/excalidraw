@@ -376,6 +376,17 @@ Two distinct systems:
 - Per-instance: `ExcalidrawProps` (defined in `packages/excalidraw/types.ts`) exposes all editor configuration (theme, language, view mode, grid, callbacks) as React props.
 - Feature flags: `getFeatureFlag()` from `@excalidraw/common` used by Sentry feature-flag integration (`COMPLEX_BINDINGS`).
 
+### TypeScript Type Safety
+
+The codebase enforces strict TypeScript discipline across all packages:
+
+- **`unknown` over `any`**: Callback signatures, promise resolutions, and untyped values use `unknown` rather than `any`. Callers must narrow the type before use. Example: `AppStateObserver`'s `onStateChange` callback is typed `(value: unknown, appState: AppState) => void`.
+- **Type-only imports**: Types imported solely for annotations use `import type { … }` to keep runtime output clean and clarify intent. Example: `import type { Bounds } from "@excalidraw/common"` in `collision.ts`.
+- **Specific type assertions**: When a cast is necessary, the narrowest concrete type is used (e.g. `as EventListener`, `as Record<string, unknown>`) rather than `as any`.
+- **Type narrowing over suppression**: Property existence is checked with `"prop" in obj` guards rather than `@ts-ignore` or `as any` casts. Example: `"displayName" in child.type` in `dropdownMenuUtils.ts`.
+
+TypeScript compliance is validated with `yarn test:typecheck` and is a required check before merge.
+
 ### State Management
 
 Two isolated Jotai stores are used to prevent cross-contamination:
