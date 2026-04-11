@@ -276,7 +276,7 @@ const _clearAppStateForStorage = <
       const nextValue = appState[key];
 
       // https://github.com/microsoft/TypeScript/issues/31445
-      (stateForExport as any)[key] = nextValue;
+      (stateForExport as Record<string, unknown>)[key] = nextValue;
     }
   }
   return stateForExport;

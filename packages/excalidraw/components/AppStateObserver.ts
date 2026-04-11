@@ -16,7 +16,7 @@ type StateChangeArg = StateChangeSelector | StateChangePredicateOptions;
 type StateChangeListener = {
   predicate: (appState: AppState, prevState: AppState) => boolean;
   getValue: (appState: AppState) => unknown;
-  callback: (value: any, appState: AppState) => void;
+  callback: (value: unknown, appState: AppState) => void;
   once: boolean;
 };
 
@@ -55,8 +55,8 @@ export type OnStateChange = {
   (opts: { predicate: (appState: AppState) => boolean }): Promise<AppState>;
   (
     selector: StateChangeSelector,
-    callback: (value: any, appState: AppState) => void,
-  ): any;
+    callback: (value: unknown, appState: AppState) => void,
+  ): UnsubscribeCallback;
 };
 
 export class AppStateObserver {
@@ -85,7 +85,7 @@ export class AppStateObserver {
 
   private normalize(
     propOrOpts: StateChangeArg,
-    callback?: (value: any, appState: AppState) => void,
+    callback?: (value: unknown, appState: AppState) => void,
     opts?: { once: boolean },
   ): NormalizedStateChange {
     let predicate: StateChangeListener["predicate"];
@@ -104,7 +104,7 @@ export class AppStateObserver {
       predicate = predicateFn;
       getValue = (appState: AppState) => appState;
       normalizedCallback = callbackFromOpts
-        ? (_value: AppState, appState: AppState) => callbackFromOpts(appState)
+        ? (_value: unknown, appState: AppState) => callbackFromOpts(appState)
         : undefined;
       once = onceFromOpts ?? false;
       matchesImmediately = predicateFn(this.getState());
@@ -136,7 +136,7 @@ export class AppStateObserver {
 
   public onStateChange: OnStateChange = ((
     propOrOpts: StateChangeArg,
-    callback?: any,
+    callback?: (value: unknown, appState: AppState) => void,
     opts?: { once: boolean },
   ) => {
     const {
@@ -170,7 +170,7 @@ export class AppStateObserver {
       return Promise.resolve(getValue(this.getState()));
     }
 
-    return new Promise<any>((resolve) => {
+    return new Promise<unknown>((resolve) => {
       this.subscribe({
         predicate,
         getValue,

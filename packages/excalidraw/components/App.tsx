@@ -3275,19 +3275,19 @@ class App extends React.Component<AppProps, AppState> {
       addEventListener(
         document,
         EVENT.GESTURE_START,
-        this.onGestureStart as any,
+        this.onGestureStart as EventListener,
         false,
       ),
       addEventListener(
         document,
         EVENT.GESTURE_CHANGE,
-        this.onGestureChange as any,
+        this.onGestureChange as EventListener,
         false,
       ),
       addEventListener(
         document,
         EVENT.GESTURE_END,
-        this.onGestureEnd as any,
+        this.onGestureEnd as EventListener,
         false,
       ),
       addEventListener(
@@ -4716,8 +4716,8 @@ class App extends React.Component<AppProps, AppState> {
           (event.shiftKey && /^[a-z]$/.test(event.key)))
       ) {
         event = new Proxy(event, {
-          get(ev: any, prop) {
-            const value = ev[prop];
+          get(ev, prop: string | symbol) {
+            const value = ev[prop as keyof typeof ev];
             if (typeof value === "function") {
               // fix for Proxies hijacking `this`
               return value.bind(ev);
