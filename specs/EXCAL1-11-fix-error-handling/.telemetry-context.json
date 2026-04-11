@@ -1,0 +1,71 @@
+{
+  "generatedAt": "2026-04-11T18:13:39Z",
+  "sourceTicket": "EXCAL1-11",
+  "tickets": {
+    "EXCAL1-11": {
+      "ticketKey": "EXCAL1-11",
+      "inputTokens": 141662,
+      "outputTokens": 15469,
+      "cacheReadTokens": 2141806,
+      "cacheCreationTokens": 16633,
+      "costUsd": 1.14734625,
+      "durationMs": 435370,
+      "model": "gpt-5.4",
+      "toolsUsed": [
+        "Agent",
+        "Bash",
+        "TodoWrite",
+        "ToolSearch",
+        "WebFetch",
+        "apply_patch",
+        "exec_command",
+        "update_plan",
+        "write_stdin"
+      ],
+      "jobCount": 2,
+      "hasData": true
+    },
+    "EXCAL1-10": {
+      "ticketKey": "EXCAL1-10",
+      "inputTokens": 2656,
+      "outputTokens": 20136,
+      "cacheReadTokens": 1723391,
+      "cacheCreationTokens": 113610,
+      "costUsd": 1.6043879,
+      "durationMs": 330496,
+      "model": "claude-opus-4-6",
+      "toolsUsed": [
+        "Agent",
+        "Bash",
+        "Edit",
+        "Glob",
+        "Grep",
+        "Read",
+        "TodoWrite",
+        "ToolSearch"
+      ],
+      "jobCount": 2,
+      "hasData": true
+    },
+    "EXCAL1-9": {
+      "ticketKey": "EXCAL1-9",
+      "inputTokens": 2747,
+      "outputTokens": 34907,
+      "cacheReadTokens": 2564348,
+      "cacheCreationTokens": 185258,
+      "costUsd": 1.5969311,
+      "durationMs": 781279,
+      "model": "claude-sonnet-4-6",
+      "toolsUsed": [
+        "Agent",
+        "Bash",
+        "Grep",
+        "Read",
+        "TodoWrite",
+        "ToolSearch"
+      ],
+      "jobCount": 2,
+      "hasData": true
+    }
+  }
+}
